@@ -1,69 +1,11 @@
 const { Client, Interaction } = require("discord.js");
 const { printError } = require("../../functions.js");
+const { market } = require("./data/budle.js");
 const { MessageActionRow, MessageSelectMenu, MessageEmbed } = require("discord.js");
 
 const where = __filename.slice(__dirname.length + 1);
 const error_here = where+"/error";
 const log_here = where+"/log";
-
-const market = [            
-        {
-            label: "V: Основное оружие Черной звезды",
-            value: "pen_bs_mainhand"
-        },
-        {
-            label: "V: Доп. оружие Черной звезды",
-            value: "pen_bs_offhand"
-        },
-        {
-            label: "V: Проб. оружие Черной звезды",
-            value: "pen_bs_awakening"
-        },
-        {
-            label: "III: Доспехи Мертвого бога",
-            value: "tri_god_armor"
-        },
-        {
-            label: "IV: Доспехи Мертвого бога",
-            value: "tet_god_armor"
-        },
-        {
-            label: "V: Доспехи Мертвого бога",
-            value: "pen_god_armor"
-        },
-        {
-            label: "III: Шлем Лабрескас",
-            value: "tri_god_helmet"
-        },
-        {
-            label: "IV: Шлем Лабрескас",
-            value: "tet_god_helmet"
-        },
-        {
-            label: "V: Шлем Лабрескас",
-            value: "pen_god_helmet"
-        },
-        {
-            label: "IV: Пояс Деборики",
-            value: "tet_deborika_belt"
-        },  
-        {
-            label: "V: Пояс Деборики",
-            value: "pen_deborika_belt"
-        },  
-        {
-            label: "IV: Ожерелье Деборики",
-            value: "tet_deborika_necklace"
-        },
-        {
-            label: "V: Ожерелье Деборики",
-            value: "pen_deborika_necklace"
-        },  
-        {
-            label: "V: Бижутерия Маноса",
-            value: "pen_manos"
-        },  
-    ]
 
 module.exports = {
     name: "want",
