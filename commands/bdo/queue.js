@@ -15,6 +15,7 @@ module.exports = {
     execute: async (client, interaction) => {
         try {
             let queue_list = client.getQueue();
+            if (!queue_list) return await interaction.reply({ content: "Очередь аукциона пуста."});
             if (queue_list.items.length < 1) return await interaction.reply({ content: "Очередь аукциона пуста."});
             await interaction.reply({ embeds: [{
                 color: "#2f3136",
