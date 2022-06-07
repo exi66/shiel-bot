@@ -1,5 +1,5 @@
 const { printError } = require("./functions.js");
-const { rare_items } = require("./data/bundle.js");
+const { rare_items } = require("./data/bundles.js");
 const { Client, Collection, Intents, MessageEmbed } = require("discord.js");
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');

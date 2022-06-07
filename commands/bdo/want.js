@@ -1,6 +1,6 @@
 const { Client, Interaction } = require("discord.js");
 const { printError } = require("../../functions.js");
-const { market } = require("./data/bundle.js");
+const { market } = require("./data/bundles.js");
 const { MessageActionRow, MessageSelectMenu, MessageEmbed } = require("discord.js");
 
 const where = __filename.slice(__dirname.length + 1);
