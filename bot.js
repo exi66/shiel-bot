@@ -9,6 +9,12 @@ const where = __filename.slice(__dirname.length + 1);
 const error_here = where+"/error";
 const log_here = where+"/log";
 
+function arrayRemove(arr, value) { 
+    return arr.filter(function(ele){ 
+        return ele != value; 
+    });
+}
+
 async function createListers(client) {
     client.on('interactionCreate', async interaction => {
         if (!interaction.isCommand()) return;
@@ -32,13 +38,34 @@ async function createListers(client) {
                 rare_items.find(e => e.value === value).items.forEach(e => item_list.push(e));
             })
 
+            let bundle_items = [];
+            rare_items.forEach(e => e.items.forEach(a => bundle_items.push(a)));
+            //console.log(bundle_items);
+
             let usr = client.myusers.get(interaction.user.id);
             if (!usr) {
                 client.createUser(interaction.user.id);
                 usr = client.myusers.get(interaction.user.id);
             }
             usr.categories = interaction.values;
+            usr.items.forEach(e => { if(!bundle_items.map(a => a.value).includes(e.value)) item_list.push(e) });
             usr.items = item_list;
+
+            let embed = new MessageEmbed()
+            .setColor("#2f3136")
+            .setTitle("Ваш список отслеживания")
+            .setDescription(client.myusers.get(interaction.user.id).items.map(e => e.label || "ID:`"+e.value.split("-")[0]+"` LVL:`"+e.value.split("-")[1]+"`").join("\n"));
+            client.saveUser(interaction.user.id);
+            return interaction.update({content: "Список обновлен!", embeds: [embed], components: []});
+        } else if (interaction.customId === "delete") {
+
+            let item = interaction.values[0];
+            let usr = client.myusers.get(interaction.user.id);
+            if (!usr) {
+                client.createUser(interaction.user.id);
+                usr = client.myusers.get(interaction.user.id);
+            }
+            usr.items = usr.items.filter(e => e.value !== item);
 
             let embed = new MessageEmbed()
             .setColor("#2f3136")
@@ -70,11 +97,11 @@ module.exports = (config) => {
     client.categories = fs.readdirSync("./commands/");
     client.login(config.token);
     client.getUsers = (item_id) => {
-        if (client.cfg.debug) return [client.cfg.root];
+        //if (client.cfg.debug) return [client.cfg.root];
         return Array.from(client.myusers.filter(u => u.items.map(e => e.value).includes(item_id)).keys());
     };
     client.getCouponsUsers = (flag) => {
-        if (client.cfg.debug) return [client.cfg.root];
+        //if (client.cfg.debug) return [client.cfg.root];
         return Array.from(client.myusers.filter(u => u.coupons === flag).keys());
     };
     client.createUser = (id) => {
@@ -111,7 +138,7 @@ module.exports = (config) => {
         return true;
     }; 
     client.getQueue = () => {
-        let queue_list = [];
+        let queue_list = {};
         try {
             queue_list = JSON.parse(fs.readFileSync(client.cfg.queue_folder, "utf8"));
         } catch (e) {

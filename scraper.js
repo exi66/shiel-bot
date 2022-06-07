@@ -66,13 +66,16 @@ module.exports = (client) => {
                     if (body !== "" && body != null) {
                         const data = JSON.parse(body)._waitList || [];
                         const items = data.map(e => ({ id: e.mainKey, lvl: e.chooseKey, price: e._pricePerOne, time: e._waitEndTime, name: e.name, value: e.mainKey+"-"+e.chooseKey, unique: ""+e.mainKey+e.chooseKey+e._waitEndTime })) || [];
-                        const old_items = client.getQueue().items.map(a => a.unique);
-                        let new_items = [];
-                        items.forEach(e => {
-                            if (!old_items.includes(e.unique)) new_items.push(e);
-                        });
+                        const old_items = client.getQueue().items || [];
+                        let new_items = [], loc = [];
+                        if (old_items.length > 0) {
+                            loc = old_items.map(a => a.unique);
+                            items.forEach(e => {
+                                if (!loc.includes(e.unique)) new_items.push(e);
+                            });
+                        } else new_items = items;
                         if (new_items.length > 0) {
-                            for (let item of new_items) {		
+                            for (let item of new_items) {	
                                 client.getUsers(item.value).forEach(async (e) => {
                                     try {
                                         let local_user = await client.users.fetch(e);

@@ -31,46 +31,36 @@ module.exports = {
             description: "Влючить/отключить уведомления о желаемых товарах. По умолчанию включено",
             type: 1,
         },
-        // {
-        //     name: "add",
-        //     description: "Добавить свой предмет для отслеживания",
-        //     type: 1,
-        //     required: false,
-        //     options: [
-        //         {
-        //             name: "id",
-        //             description: "ID предмета",
-        //             type: 4,
-        //             required: true,
-        //         },
-        //         {
-        //             name: "lvl",
-        //             description: "Уровень усиления",
-        //             type: 4,
-        //             required: true,
-        //         },                
-        //     ],
-        // },
-        // {
-        //     name: "rm",
-        //     description: "Удалить предмет из отслеживаемых",
-        //     type: 1,
-        //     required: false,
-        //     options: [
-        //         {
-        //             name: "id",
-        //             description: "ID предмета",
-        //             type: 4,
-        //             required: true,
-        //         },
-        //         {
-        //             name: "lvl",
-        //             description: "Уровень усиления",
-        //             type: 4,
-        //             required: true,
-        //         },                
-        //     ],
-        // },
+        {
+            name: "add",
+            description: "Добавить свой предмет для отслеживания",
+            type: 1,
+            options: [
+                {
+                    name: "name",
+                    description: "Название предмета. Понятное вам, потому что через него происходят все манипуляции",
+                    type: 3,
+                    required: true,
+                },
+                {
+                    name: "id",
+                    description: "ID предмета",
+                    type: 4,
+                    required: true,
+                },
+                {
+                    name: "enchant",
+                    description: "Уровень усиления",
+                    type: 4,
+                    required: true,
+                },                
+            ],
+        },
+        {
+            name: "rm",
+            description: "Удалить предмет из отслеживаемых",
+            type: 1,
+        },
     ],
     /**
     * @param {Client} client
@@ -96,11 +86,10 @@ module.exports = {
             } else if (interaction.options.getSubcommand() === "presets") {
                 //console.log(interaction);
                 let list = [];
+                const usr = client.myusers.get(interaction.user.id);
                 market.forEach((e) => {
-                    const usr = client.myusers.get(interaction.user.id);
                     if (usr) {
-                        //console.log(usr.categories);
-                        if (usr.categories.includes(e.value)) e.default = true;
+                        e.default = usr.categories.includes(e.value);
                     }
                     list.push(e);
                 })
@@ -114,9 +103,33 @@ module.exports = {
                 );
                 return await interaction.reply({ content: "Выберите предметы", components: [items] });
             } else if (interaction.options.getSubcommand() === "add") {
-
+                let item = {
+                    label: interaction.options.get("name").value,
+                    value: interaction.options.get("id").value+"-"+interaction.options.get("enchant").value,
+                }
+                let usr = client.myusers.get(interaction.user.id);
+                if (!usr) {
+                    client.createUser(interaction.user.id);
+                    usr = client.myusers.get(interaction.user.id);
+                }
+                usr.items.push(item);
+                client.saveUser(interaction.user.id);
+                let embed = new MessageEmbed()
+                .setColor("#2f3136")
+                .setTitle("Ваш список отслеживания")
+                .setDescription(usr.items.map(e => e.label || "ID:`"+e.value.split("-")[0]+"` LVL:`"+e.value.split("-")[1]+"`").join("\n"));
+                return await interaction.reply({ content: "Список обновлен!", embeds: [embed] });
             } else if (interaction.options.getSubcommand() === "rm") {
-
+                const usr = client.myusers.get(interaction.user.id).items;
+                const items = new MessageActionRow()
+                .addComponents(
+                    new MessageSelectMenu()
+                        .setCustomId("delete")
+                        .setMaxValues(1)
+                        .setPlaceholder("Ничего не выбрано")
+                        .addOptions(usr),                       
+                );
+                return await interaction.reply({ content: "Выберите предмет, который хотите удалить из отслеживания", components: [items] });
             } else if (interaction.options.getSubcommand() === "alerts") {
                 let usr = client.myusers.get(interaction.user.id);
                 if (!usr) {
