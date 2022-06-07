@@ -79,7 +79,7 @@ module.exports = (client) => {
                                 client.getUsers(item.value).forEach(async (e) => {
                                     try {
                                         let local_user = await client.users.fetch(e);
-                                        if (local_user) local_user.send({ content: `<@${e}>, **${item.name}** зарегестрирован на аукционе за ${item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}. Время размещения <t:${(item.time/1000).toFixed(0)}:R>`});
+                                        if (local_user) local_user.send({ content: `<@${e}>, Лот **«${item.name}»** зарегистрирован на аукционе за ${item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}. Время размещения <t:${(item.time/1000).toFixed(0)}:R>`});
                                     } catch (e) {
                                         printError(error_here, "cannot send queue, "+e.message);
                                     }
