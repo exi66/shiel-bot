@@ -120,7 +120,7 @@ module.exports = {
                 .setDescription(usr.items.map(e => e.label || "ID:`"+e.value.split("-")[0]+"` LVL:`"+e.value.split("-")[1]+"`").join("\n"));
                 return await interaction.reply({ content: "Список обновлен!", embeds: [embed] });
             } else if (interaction.options.getSubcommand() === "rm") {
-                const usr = client.myusers.get(interaction.user.id).items;
+                const usr = client.myusers.get(interaction.user.id).items.length > 25 ? client.myusers.get(interaction.user.id).items : client.myusers.get(interaction.user.id).items.slice(0, 25);
                 const items = new MessageActionRow()
                 .addComponents(
                     new MessageSelectMenu()
