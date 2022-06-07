@@ -72,7 +72,7 @@ module.exports = (client) => {
                             if (!old_items.includes(e.unique)) new_items.push(e);
                         });
                         if (new_items.length > 0) {
-                            for (let item of items) {		
+                            for (let item of new_items) {		
                                 client.getUsers(item.value).forEach(async (e) => {
                                     try {
                                         let local_user = await client.users.fetch(e);
