@@ -33,7 +33,7 @@ async function createListers(client) {
         if (!interaction.isSelectMenu()) return;
         if (interaction.customId === "want") {
 
-            let item_list = [], local_rare_items = [...rare_items];
+            let item_list = [], local_rare_items = rare_items.map(obj => ({...obj}));
             interaction.values.forEach(value => {
                 local_rare_items.find(e => e.value === value).items.forEach(e => item_list.push(e));
             })

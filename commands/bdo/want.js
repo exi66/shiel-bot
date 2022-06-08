@@ -85,7 +85,7 @@ module.exports = {
                 return await interaction.reply({embeds: [embed]});
             } else if (interaction.options.getSubcommand() === "presets") {
                 //console.log(interaction);
-                let list = [], local_market = [...market];
+                let list = [], local_market = market.map(obj => ({...obj}));
                 const usr = client.myusers.get(interaction.user.id);
                 local_market.forEach((e) => {
                     if (usr) {
