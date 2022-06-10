@@ -53,8 +53,7 @@ async function createListers(client) {
 
             client.saveUser(interaction.user.id);
 
-            console.log(interaction.values);
-            if (interaction.values.length < 1) return interaction.update({content: "Список обновлен!", embeds: [embed], components: []});
+            if (interaction.values.length < 1) return interaction.update({content: "Список обновлен!", components: []});
 
             let embed = new MessageEmbed()
             .setColor("#2f3136")
