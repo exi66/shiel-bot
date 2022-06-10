@@ -51,11 +51,14 @@ async function createListers(client) {
             usr.items.forEach(e => { if(!bundle_items.map(a => a.value).includes(e.value)) item_list.push(e) });
             usr.items = item_list;
 
+            client.saveUser(interaction.user.id);
+            
+            if (interaction.values.length < 1) return interaction.update({content: "Список обновлен!", embeds: [embed], components: []});
+
             let embed = new MessageEmbed()
             .setColor("#2f3136")
             .setTitle("Ваш список отслеживания")
             .setDescription(client.myusers.get(interaction.user.id).items.map(e => e.label || "ID:`"+e.value.split("-")[0]+"` LVL:`"+e.value.split("-")[1]+"`").join("\n"));
-            client.saveUser(interaction.user.id);
             return interaction.update({content: "Список обновлен!", embeds: [embed], components: []});
         } else if (interaction.customId === "delete") {
 

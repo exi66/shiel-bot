@@ -96,7 +96,7 @@ module.exports = {
                 const items = new MessageActionRow()
                 .addComponents(
                     new MessageSelectMenu()
-                        .setMinValues(1)
+                        .setMinValues(0)
                         .setCustomId("want")
                         .setPlaceholder("Ничего не выбрано")
                         .addOptions(list),                       
