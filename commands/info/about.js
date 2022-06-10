@@ -33,7 +33,7 @@ module.exports = {
             .setColor("#2f3136")
             .setTitle("О проекте")
             .setDescription("Discord.js бот для отслеживания регистрации редких предметов на аукционе игры Black Desert Online. Поддерживает только русскоговорящий регион.");
-            return interaction.reply({content: "Список обновлен!", embeds: [embed], components: [buttons]});
+            return interaction.reply({ embeds: [embed], components: [buttons]});
         } catch (e) {
             printError(error_here, e.message);
         }
