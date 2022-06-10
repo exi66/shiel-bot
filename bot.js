@@ -52,7 +52,8 @@ async function createListers(client) {
             usr.items = item_list;
 
             client.saveUser(interaction.user.id);
-            
+
+            console.log(interaction.values);
             if (interaction.values.length < 1) return interaction.update({content: "Список обновлен!", embeds: [embed], components: []});
 
             let embed = new MessageEmbed()
