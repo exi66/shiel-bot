@@ -1,66 +1,41 @@
 const { Client, Interaction } = require("discord.js");
 const { printError } = require("../../functions.js");
 const { market } = require("../../data/bundles.js");
-const { MessageActionRow, MessageSelectMenu, MessageEmbed } = require("discord.js");
+const { MessageActionRow, MessageSelectMenu, MessageEmbed, MessageButton } = require("discord.js");
 
 const where = __filename.slice(__dirname.length + 1);
 const error_here = where+"/error";
 const log_here = where+"/log";
 
 module.exports = {
-    name: "want",
+    name: "аукцион",
     description: "Добавить товар для отслеживания на аукционе",
     options: [
         {
-            name: "presets",
+            name: "отслеживать",
             description: "Добавить/изменить отслеживание по популярным пресетам",
             type: 1,
         },
         {
-            name: "list",
+            name: "список",
             description: "Посмотреть свои отслеживемые товары",
             type: 1,
         },
         {
-            name: "clear",
+            name: "очистить",
             description: "Очистить весь список",
             type: 1,
         },
         {
-            name: "alerts",
+            name: "очередь",
+            description: "Возвращает текущую очередь аукциона",
+            type: 1,
+        },
+        {
+            name: "уведомления",
             description: "Влючить/отключить уведомления о желаемых товарах. По умолчанию включено",
             type: 1,
-        },
-        {
-            name: "add",
-            description: "Добавить свой предмет для отслеживания",
-            type: 1,
-            options: [
-                {
-                    name: "name",
-                    description: "Название предмета. Понятное вам, потому что через него происходят все манипуляции",
-                    type: 3,
-                    required: true,
-                },
-                {
-                    name: "id",
-                    description: "ID предмета",
-                    type: 4,
-                    required: true,
-                },
-                {
-                    name: "enchant",
-                    description: "Уровень усиления",
-                    type: 4,
-                    required: true,
-                },                
-            ],
-        },
-        {
-            name: "rm",
-            description: "Удалить предмет из отслеживаемых",
-            type: 1,
-        },
+        }
     ],
     /**
     * @param {Client} client
@@ -68,77 +43,60 @@ module.exports = {
     */
     execute: async (client, interaction) => {
         try {
-            if (interaction.options.getSubcommand() === "clear") {
-                let usr = client.myusers.get(interaction.user.id);
-                if (!usr) return await interaction.reply({content: "Ваш список и так пуст!"});
-                usr.categories = [];
-                usr.items = [];
+            if (interaction.options.getSubcommand() === "очистить") {
+                let user = client.myusers.get(interaction.user.id);
+                if (!user) return await interaction.reply({content: "Ваш список и так пуст!"});
+                user.items = [];
                 client.saveUser(interaction.user.id);
                 return await interaction.reply({ content: "Список отслеживаемых товаров очищен!"});
-            } else if (interaction.options.getSubcommand() === "list") {
-                let usr = client.myusers.get(interaction.user.id);
-                if (!usr || usr.items.length < 1) return await interaction.reply({content: "Ваш список пуст!"});
-                let embed = new MessageEmbed()
+            } else if (interaction.options.getSubcommand() === "список") {
+                let user = client.myusers.get(interaction.user.id);
+                if (!user || user.items.length < 1) return await interaction.reply({content: "Ваш список пуст!"});
+                const embed = new MessageEmbed()
                 .setColor("#2f3136")
                 .setTitle("Ваш список отслеживания")
-                .setDescription(usr.items.map(e => e.label || "ID:`"+e.value.split("-")[0]+"` LVL:`"+e.value.split("-")[1]+"`").join("\n"));
+                .setDescription(user.items.map(e => e.items.map(a => a.label || "ID:`"+a.value.split("-")[0]+" `LVL:`"+a.value.split("-")[1]+"`").join("\n")).join("\n"));
                 return await interaction.reply({embeds: [embed]});
-            } else if (interaction.options.getSubcommand() === "presets") {
-                //console.log(interaction);
-                let list = [], local_market = market.map(obj => ({...obj}));
-                const usr = client.myusers.get(interaction.user.id);
-                local_market.forEach((e) => {
-                    if (usr) {
-                        e.default = usr.categories.includes(e.value);
-                    }
-                    list.push(e);
-                })
-                const items = new MessageActionRow()
+            } else if (interaction.options.getSubcommand() === "отслеживать") {
+                const local_market = market.map(e => ({...e}));
+                const select_menu = new MessageActionRow()
                 .addComponents(
                     new MessageSelectMenu()
-                        .setMinValues(0)
-                        .setCustomId("want")
+                        .setCustomId("category")
                         .setPlaceholder("Ничего не выбрано")
-                        .addOptions(list),                       
+                        .addOptions(local_market),                       
                 );
-                return await interaction.reply({ content: "Выберите предметы", components: [items] });
-            } else if (interaction.options.getSubcommand() === "add") {
-                let item = {
-                    label: interaction.options.get("name").value,
-                    value: interaction.options.get("id").value+"-"+interaction.options.get("enchant").value,
-                }
-                let usr = client.myusers.get(interaction.user.id);
-                if (!usr) {
-                    client.createUser(interaction.user.id);
-                    usr = client.myusers.get(interaction.user.id);
-                }
-                usr.items.push(item);
-                client.saveUser(interaction.user.id);
-                let embed = new MessageEmbed()
-                .setColor("#2f3136")
-                .setTitle("Ваш список отслеживания")
-                .setDescription(usr.items.map(e => e.label || "ID:`"+e.value.split("-")[0]+"` LVL:`"+e.value.split("-")[1]+"`").join("\n"));
-                return await interaction.reply({ content: "Список обновлен!", embeds: [embed] });
-            } else if (interaction.options.getSubcommand() === "rm") {
-                const usr = client.myusers.get(interaction.user.id).items.length > 25 ? client.myusers.get(interaction.user.id).items.slice(0, 25) : client.myusers.get(interaction.user.id).items;
-                const items = new MessageActionRow()
+                const buttons = new MessageActionRow()
                 .addComponents(
-                    new MessageSelectMenu()
-                        .setCustomId("delete")
-                        .setMaxValues(1)
-                        .setPlaceholder("Ничего не выбрано")
-                        .addOptions(usr),                       
+                    new MessageButton()
+                        .setCustomId('cancel')
+                        .setLabel('Отмена')
+                        .setStyle('SECONDARY'),  
                 );
-                return await interaction.reply({ content: "Выберите предмет, который хотите удалить из отслеживания", components: [items] });
-            } else if (interaction.options.getSubcommand() === "alerts") {
-                let usr = client.myusers.get(interaction.user.id);
-                if (!usr) {
+                return await interaction.reply({ content: "Выберите категорию", components: [select_menu, buttons] });
+            } else if (interaction.options.getSubcommand() === "уведомления") {
+                let user = client.myusers.get(interaction.user.id);
+                if (!user) {
                     client.createUser(interaction.user.id);
-                    usr = client.myusers.get(interaction.user.id);
+                    user = client.myusers.get(interaction.user.id);
                 }
-                usr.queue_alerts = !usr.queue_alerts;
+                user.queue_alerts = !user.queue_alerts;
                 client.saveUser(interaction.user.id);
-                return await interaction.reply({content: `Информирование о поступлении теперь ${usr.queue_alerts ? "выполняется" : "не выполняется" }`});
+                return await interaction.reply({content: `Информирование о поступлении теперь ${user.queue_alerts ? "выполняется" : "не выполняется" }`});
+            } else if (interaction.options.getSubcommand() === "очередь") {
+                let queue_list = client.getQueue();
+                if (!queue_list.items) return await interaction.reply({ content: "Очередь аукциона пуста."});
+                if (queue_list.items.length < 1) return await interaction.reply({ content: "Очередь аукциона пуста."});
+                await interaction.reply({ embeds: [{
+                    color: "#2f3136",
+                    title: "Очередь аукциона",
+                    timestamp: new Date(queue_list.lastUpdate),
+                    fields: [
+                        { name: "Ур.", value: queue_list.items.map(e => e.lvl).join("\n"), inline: true},
+                        { name: "Название", value: queue_list.items.map(e => e.name).join("\n"), inline: true},
+                        { name: "Время размещения", value: queue_list.items.map(e => `<t:${(e.time/1000).toFixed(0)}:R>`).join("\n"), inline: true}
+                    ]
+                }]});
             }
         } catch (e) {
             printError(error_here, e.message);

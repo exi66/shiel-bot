@@ -8,7 +8,9 @@ const log_here = where+"/log";
 module.exports = (client) => {
     return setInterval(async function() {
         try {
-            client.user.setActivity("next check in "+new Date(new Date().getTime()+5*60*1000).toTimeString().split(' ')[0], { type: 'PLAYING' });
+            let next_check_date = new Date(new Date().getTime() + 5*60*1000);
+            let next_check_time = [next_check_date.getHours(), next_check_date.getMinutes()].map(function (x) { return x < 10 ? "0" + x : x }).join(":");
+            client.user.setActivity("следующая проверка в "+next_check_time, { type: 'PLAYING' });
             if (client.cfg.coupons) {	
                 let body = await request({
                     method: "GET",
@@ -27,6 +29,7 @@ module.exports = (client) => {
                         if (!coupons_list.includes(c.toUpperCase())) new_coupones_list.push(c.toUpperCase());
                     }							
                     if (new_coupones_list.length > 0) {
+                        
                         let codes = new_coupones_list.map(e => "```" + e + "````").join("\n");
                         let local_users = client.getCouponsUsers(true);
                         for (let usr of local_users) {						
@@ -75,7 +78,7 @@ module.exports = (client) => {
                             });
                         } else new_items = items;
                         if (new_items.length > 0) {
-                            for (let item of new_items) {	
+                            for (let item of new_items) {
                                 client.getUsers(item.value).forEach(async (e) => {
                                     try {
                                         let local_user = await client.users.fetch(e);

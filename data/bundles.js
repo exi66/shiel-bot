@@ -1,66 +1,8 @@
 module.exports = {
-    market: [            
+    market: [
         {
-            label: "V: Основное оружие Черной звезды",
-            value: "pen_bs_mainhand"
-        },
-        {
-            label: "V: Доп. оружие Черной звезды",
-            value: "pen_bs_offhand"
-        },
-        {
-            label: "V: Проб. оружие Черной звезды",
-            value: "pen_bs_awakening"
-        },
-        {
-            label: "III: Доспехи Мертвого бога",
-            value: "tri_god_armor"
-        },
-        {
-            label: "IV: Доспехи Мертвого бога",
-            value: "tet_god_armor"
-        },
-        {
-            label: "V: Доспехи Мертвого бога",
-            value: "pen_god_armor"
-        },
-        {
-            label: "III: Шлем Лабрескас",
-            value: "tri_god_helmet"
-        },
-        {
-            label: "IV: Шлем Лабрескас",
-            value: "tet_god_helmet"
-        },
-        {
-            label: "V: Шлем Лабрескас",
-            value: "pen_god_helmet"
-        },
-        {
-            label: "IV: Пояс Деборики",
-            value: "tet_deborika_belt"
-        },  
-        {
-            label: "V: Пояс Деборики",
-            value: "pen_deborika_belt"
-        },  
-        {
-            label: "IV: Ожерелье Деборики",
-            value: "tet_deborika_necklace"
-        },
-        {
-            label: "V: Ожерелье Деборики",
-            value: "pen_deborika_necklace"
-        },  
-        {
-            label: "V: Бижутерия Маноса",
-            value: "pen_manos"
-        },  
-    ],
-    rare_items: [
-        {
-            label: "V: Основное оружие Черной звезды",
-            value: "pen_bs_mainhand",
+            label: "Основное оружие",
+            value: "mainhand",
             items: [
                 { label: "V: Меч Черной звезды", value: "715001-20" }, { label: "V: Лук Черной звезды", value: "715003-20" },
                 { label: "V: Талисман Черной звезды", value: "715005-20" }, { label: "V: Топор Черной звезды", value: "715007-20" },
@@ -74,8 +16,8 @@ module.exports = {
             ]
         },
         {
-            label: "V: Доп. оружие Черной звезды",
-            value: "pen_bs_offhand",
+            label: "Доп. оружие",
+            value: "offhand",
             items: [
                 { label: "V: Щит Черной звезды", value: "735001-20" }, { label: "V: Кинжал Черной звезды", value: "735002-20" }, 
                 { label: "V: Амулет Черной звезды", value: "735003-20" }, { label: "V: Темляк Черной звезды", value: "735004-20" }, 
@@ -88,8 +30,8 @@ module.exports = {
             ]
         },
         {
-            label: "V: Проб. оружие Черной звезды",
-            value: "pen_bs_awakening",
+            label: "Проб. оружие",
+            value: "awakening",
             items: [
                 { label: "V: Боевые наручи Черной звезды", value: "731114-20" }, { label: "V: Клинки асуров Черной звезды", value: "731109-20" }, 
                 { label: "V: Клинки крови Черной звезды", value: "731117-20" }, { label: "V: Копье Черной звезды", value: "731106-20" }, 
@@ -105,82 +47,28 @@ module.exports = {
             ]
         },
         {
-            label: "III: Доспехи Мертвого бога",
-            value: "tri_god_armor",
+            label: "Доспехи",
+            value: "armor",
             items: [
-                { label: "III: Доспехи Мертвого бога", value: "719898-3" }
-            ]
-        },
-        {
-            label: "IV: Доспехи Мертвого бога",
-            value: "tet_god_armor",
-            items: [
-                { label: "IV: Доспехи Мертвого бога", value: "719898-4" }
-            ]
-        },
-        {
-            label: "V: Доспехи Мертвого бога",
-            value: "pen_god_armor",
-            items: [
-                { label: "V: Доспехи Мертвого бога", value: "719898-5" }
-            ]
-        },
-        {
-            label: "III: Шлем Лабрескас",
-            value: "tri_god_helmet",
-            items: [
-                { label: "III: Шлем Лабрескас", value: "719897-3" }
-            ]
-        },
-        {
-            label: "IV: Шлем Лабрескас",
-            value: "tet_god_helmet",
-            items: [
-                { label: "IV: Шлем Лабрескас", value: "719897-4" }
-            ]
-        },
-        {
-            label: "V: Шлем Лабрескас",
-            value: "pen_god_helmet",
-            items: [
+                { label: "III: Доспехи Мертвого бога", value: "719898-3" },
+                { label: "IV: Доспехи Мертвого бога", value: "719898-4" },
+                { label: "V: Доспехи Мертвого бога", value: "719898-5" },
+                { label: "III: Шлем Лабрескас", value: "719897-3" },
+                { label: "IV: Шлем Лабрескас", value: "719897-4" },
                 { label: "V: Шлем Лабрескас", value: "719897-5" }
             ]
         },
         {
-            label: "IV: Пояс Деборики",
-            value: "tet_deborika_belt",
+            label: "Бижутерия",
+            value: "jewellery",
             items: [
-                { label: "IV: Пояс Деборики", value: "12276-4" }
-            ]
-        }, 
-        {
-            label: "V: Пояс Деборики",
-            value: "pen_deborika_belt",
-            items: [
-                { label: "V: Пояс Деборики", value: "12276-5" }
-            ]
-        },
-        {
-            label: "IV: Ожерелье Деборики",
-            value: "tet_deborika_necklace",
-            items: [
-                { label: "IV: Ожерелье Деборики", value: "11653-4" }
-            ]
-        }, 
-        {
-            label: "V: Ожерелье Деборики",
-            value: "pen_deborika_necklace",
-            items: [
-                { label: "V: Ожерелье Деборики", value: "11653-5" }
-            ]
-        },
-        {
-            label: "V: Бижутерия Маноса",
-            value: "pen_manos",
-            items: [
+                { label: "IV: Пояс Деборики", value: "12276-4" },
+                { label: "V: Пояс Деборики", value: "12276-5" },
+                { label: "IV: Ожерелье Деборики", value: "11653-4" },
+                { label: "V: Ожерелье Деборики", value: "11653-5" },
                 { label: "V: Ожерелье Маноса", value: "705509-5" }, { label: "V: Пояс Маноса", value: "705512-5" },
                 { label: "V: Серьги Маноса", value: "705510-5" }, { label: "V: Кольцо Маноса", value: "705511-5" }
             ]
-        },        
-    ]    
+        }
+    ]
 }

@@ -5,8 +5,8 @@ module.exports = (client) => {
     for (let file of users) {
         let pull = require(`../users/${file}`);
 
-        if (pull.id && pull.items && pull.categories && (pull.coupons_alerts != undefined) && (pull.queue_alerts != undefined)) {
-            client.myusers.set(pull.id, { categories: pull.categories, items: pull.items, coupons_alerts: pull.coupons_alerts, queue_alerts: pull.queue_alerts });
+        if (pull.id && pull.items && (pull.coupons_alerts != undefined) && (pull.queue_alerts != undefined)) {
+            client.myusers.set(pull.id, { items: pull.items, coupons_alerts: pull.coupons_alerts, queue_alerts: pull.queue_alerts });
         } else {
             continue;
         }

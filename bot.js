@@ -1,6 +1,6 @@
 const { printError } = require("./functions.js");
-const { rare_items } = require("./data/bundles.js");
-const { Client, Collection, Intents, MessageEmbed } = require("discord.js");
+const { market } = require("./data/bundles.js");
+const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageSelectMenu, MessageButton } = require("discord.js");
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const fs = require("fs");
@@ -9,14 +9,8 @@ const where = __filename.slice(__dirname.length + 1);
 const error_here = where+"/error";
 const log_here = where+"/log";
 
-function arrayRemove(arr, value) { 
-    return arr.filter(function(ele){ 
-        return ele != value; 
-    });
-}
-
 async function createListers(client) {
-    client.on('interactionCreate', async interaction => {
+    client.on("interactionCreate", async interaction => {
         if (!interaction.isCommand()) return;
         const command = client.commands.get(interaction.commandName);
 
@@ -26,55 +20,85 @@ async function createListers(client) {
             await command.execute(client, interaction);
         } catch (e) {
             printError(error_here, e.message);
-            await interaction.reply({ content: 'Непредвиденная ошибка!' });
+            await interaction.reply({ content: "Непредвиденная ошибка!" });
+        }
+    });
+    client.on("interactionCreate", async interaction => {
+        if (!interaction.isButton()) return;
+        if (interaction.customId === "cancel") {
+            return await interaction.update({ content: "Команда отменена пользователем!", components: [] });
+        } else if (interaction.customId === "clear_all") {
+            const category = interaction.message.components[0].components[0].custom_id.split("-")[0] || null;
+            if (!category) return await interaction.update({ content: "Категории не существует!", components: [] });
+            let user = client.myusers.get(interaction.user.id);
+            if (!user) user = client.createUser(interaction.user.id);
+            let user_category = user.items.find(e => e.category === category);
+            if (!user_category) return await interaction.reply({ content: "У вас эта категория и так пуста!", ephemeral: true });
+            user_category.items = [];
+            client.saveUser(interaction.user.id);
+            return await interaction.update({ content: "Категория очищена!", components: [] });
         }
     });
     client.on("interactionCreate", async interaction => {
         if (!interaction.isSelectMenu()) return;
-        if (interaction.customId === "want") {
+        if (interaction.customId === "category") {
+            let local_items = JSON.parse(JSON.stringify(market.find(e => e.value === interaction.values[0])));
+            if (!local_items) return await interaction.update({ content: "Категории не существует!", components: [] });
 
-            let item_list = [], local_rare_items = rare_items.map(obj => ({...obj}));
-            interaction.values.forEach(value => {
-                local_rare_items.find(e => e.value === value).items.forEach(e => item_list.push(e));
-            })
-
-            let bundle_items = [];
-            local_rare_items.forEach(e => e.items.forEach(a => bundle_items.push(a)));
-            //console.log(bundle_items);
-
-            let usr = client.myusers.get(interaction.user.id);
-            if (!usr) {
-                client.createUser(interaction.user.id);
-                usr = client.myusers.get(interaction.user.id);
+            let user = client.myusers.get(interaction.user.id), flag = false;
+            if (user) {
+                let search_category = user.items.find(e => e.category === interaction.values[0]);
+                if (search_category) {
+                    local_items.items.forEach(e => {
+                        if(search_category.items.map(a => a.value).includes(e.value)) flag = e.default = true;
+                    });
+                }
             }
-            usr.categories = interaction.values;
-            usr.items.forEach(e => { if(!bundle_items.map(a => a.value).includes(e.value)) item_list.push(e) });
-            usr.items = item_list;
+            const select_menu = new MessageActionRow()
+            .addComponents(
+                new MessageSelectMenu()
+                    .setMinValues(1)
+                    .setCustomId(interaction.values[0]+"-items")
+                    .setPlaceholder("Ничего не выбрано")
+                    .addOptions(local_items.items),                     
+            );
+            const buttons = new MessageActionRow()
+            .addComponents(
+                new MessageButton()
+                    .setCustomId('cancel')
+                    .setLabel('Отмена')
+                    .setStyle('SECONDARY'), 
+                new MessageButton()
+                    .setCustomId('clear_all')
+                    .setLabel('Очистить')
+                    .setStyle('DANGER')
+                    .setDisabled(!flag),
+            );
+            return await interaction.update({ content: "Выберите предметы", components: [select_menu, buttons] });
+        } else if (interaction.customId.includes("items")) {
+            const category = interaction.customId.split("-")[0],
+            local_items = JSON.parse(JSON.stringify(market.find(e => e.value === category))),
+            user_items = [];
+
+            if (!local_items) return await interaction.update({ content: "Категории не существует!", components: [] });
+
+            local_items.items.forEach(e => {
+                if (interaction.values.includes(e.value)) user_items.push(e);
+            });
+
+            let user = client.myusers.get(interaction.user.id);
+            if (!user) user = client.createUser(interaction.user.id);
+
+            let user_category = user.items.find(e => e.category === category);
+            if (user_category) user_category.items = user_items;
+            else user.items.push({ category: category, items: user_items });
 
             client.saveUser(interaction.user.id);
 
-            if (interaction.values.length < 1) return interaction.update({content: "Список обновлен!", components: []});
-
-            let embed = new MessageEmbed()
+            const embed = new MessageEmbed()
             .setColor("#2f3136")
-            .setTitle("Ваш список отслеживания")
-            .setDescription(client.myusers.get(interaction.user.id).items.map(e => e.label || "ID:`"+e.value.split("-")[0]+"` LVL:`"+e.value.split("-")[1]+"`").join("\n"));
-            return interaction.update({content: "Список обновлен!", embeds: [embed], components: []});
-        } else if (interaction.customId === "delete") {
-
-            let item = interaction.values[0];
-            let usr = client.myusers.get(interaction.user.id);
-            if (!usr) {
-                client.createUser(interaction.user.id);
-                usr = client.myusers.get(interaction.user.id);
-            }
-            usr.items = usr.items.filter(e => e.value !== item);
-
-            let embed = new MessageEmbed()
-            .setColor("#2f3136")
-            .setTitle("Ваш список отслеживания")
-            .setDescription(client.myusers.get(interaction.user.id).items.map(e => e.label || "ID:`"+e.value.split("-")[0]+"` LVL:`"+e.value.split("-")[1]+"`").join("\n"));
-            client.saveUser(interaction.user.id);
+            .setTitle("Ваш список отслеживания") //e.label || "ID:`"+e.split("-")[0]+"` LVL:`"+e.split("-")[1]+"`").join("\n")
+            .setDescription(user.items.map(e => e.items.map(a => a.label || "ID:`"+a.value.split("-")[0]+" `LVL:`"+a.value.split("-")[1]+"`").join("\n")).join("\n"));
             return interaction.update({content: "Список обновлен!", embeds: [embed], components: []});
         }
     });
@@ -101,21 +125,19 @@ module.exports = (config) => {
     client.login(config.token);
     client.getUsers = (item_id) => {
         //if (client.cfg.debug) return [client.cfg.root];
-        return Array.from(client.myusers.filter(u => u.items.map(e => e.value).includes(item_id)).keys());
+        return Array.from(client.myusers.filter(u => {
+            let all_items = [];
+            u.items.forEach(a => a.items.forEach(b => all_items.push(b)));
+            return (all_items.map(e => e.value).includes(item_id) && u.queue_alerts);
+        }).keys());
     };
     client.getCouponsUsers = (flag) => {
         //if (client.cfg.debug) return [client.cfg.root];
-        return Array.from(client.myusers.filter(u => u.coupons === flag).keys());
+        return Array.from(client.myusers.filter(u => u.coupons_alerts === flag).keys());
     };
     client.createUser = (id) => {
-        let data = {};
-        data.id = id;
-        data.coupons_alerts = false;
-        data.queue_alerts = true;
-        data.categories = [];
-        data.items = [];
-        client.myusers.set(id, { categories: data.categories, items: data.items, coupons_alerts: data.coupons_alerts, queue_alerts: data.queue_alerts });
-        return data;
+        client.myusers.set(id, { items: [], coupons_alerts: false, queue_alerts: true });
+        return client.myusers.get(id);
     }
     client.saveUser = (id) => {
         let data = client.myusers.get(id) || client.createUser(id);

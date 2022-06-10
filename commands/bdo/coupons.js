@@ -6,16 +6,16 @@ const error_here = where+"/error";
 const log_here = where+"/log";
 
 module.exports = {
-    name: "coupons",
+    name: "купоны",
     description: "Возвращает доступные купоны",
     options: [
         {
-            name: "list",
+            name: "список",
             description: "Посмотреть весь список",
             type: 1,
         },
         {
-            name: "alerts",
+            name: "уведомления",
             description: "Влючить/отключить уведомления о новых купонах. По умолчанию отключено",
             type: 1,
         },
@@ -26,7 +26,7 @@ module.exports = {
      */
     execute: async (client, interaction) => {
         try {
-            if (interaction.options.getSubcommand() === "list") {
+            if (interaction.options.getSubcommand() === "список") {
                 let coupons_list = client.getCoupons();
                 if (coupons_list.length < 1) return await interaction.reply({ content: "Нет доступных на данный момент купонов." });
                 await interaction.reply({ embeds: [{
@@ -37,7 +37,7 @@ module.exports = {
                         description: coupons_list.map(e => "```"+e+"```").join("\n")
                     }]
                 });
-            } else if (interaction.options.getSubcommand() === "alerts") {
+            } else if (interaction.options.getSubcommand() === "уведомления") {
                 let usr = client.myusers.get(interaction.user.id);
                 if (!usr) {
                     client.createUser(interaction.user.id);
