@@ -16,7 +16,7 @@ module.exports = (client) => {
                     method: "GET",
                     url: "https://orbit-games.com/",
                     headers: {
-                        "User-Agent": "BDO-Umaru-bot https://github.com/exi66/BDO-Umaru-bot"
+                        "User-Agent": "bdo-market-wait-list https://github.com/exi66/bdo-market-wait-list"
                     }
                 });
                 if (body !== "" && body != null) {	
