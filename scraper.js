@@ -23,33 +23,35 @@ module.exports = (client) => {
                     let div = body.match(/<div\s+id="text-15".*?>[\S\s]*?<\/div>/gi);
                     if (!div) return printError(error_here, "div with coupones not found, need to edit regex");
                     let search = div[0].match(/\(?[a-zA-Z0-9]{4}\)?-?[a-zA-Z0-9]{4}?-?[a-zA-Z0-9]{4}-?[a-zA-Z0-9]{4}/gm);
-                    let all_coupones_list = [], new_coupones_list = [], coupons_list = client.getCoupons();
-                    for (let c of search) {
-                        if (!all_coupones_list.includes(c.toUpperCase())) all_coupones_list.push(c.toUpperCase());
-                        if (!coupons_list.includes(c.toUpperCase())) new_coupones_list.push(c.toUpperCase());
-                    }							
-                    if (new_coupones_list.length > 0) {
-                        
-                        let codes = new_coupones_list.map(e => "```" + e + "````").join("\n");
-                        let local_users = client.getCouponsUsers(true);
-                        for (let usr of local_users) {						
-                            try {
-                                let local_user = await client.users.fetch(usr);
-                                if (local_user) local_user.send({
-                                    embeds: [{
-                                        color: "#2f3136",
-                                        title: "Купоны",
-                                        url: "https://orbit-games.com/",
-                                        timestamp: new Date(),
-                                        description: codes
-                                    }]
-                                });
-                            } catch (e) {
-                                printError(error_here, "cannot send new coupones, "+e.message);
-                            }
+                    if (search) { 
+                        let all_coupones_list = [], new_coupones_list = [], coupons_list = client.getCoupons();
+                        for (let c of search) {
+                            if (!all_coupones_list.includes(c.toUpperCase())) all_coupones_list.push(c.toUpperCase());
+                            if (!coupons_list.includes(c.toUpperCase())) new_coupones_list.push(c.toUpperCase());
                         }							
+                        if (new_coupones_list.length > 0) {
+                            
+                            let codes = new_coupones_list.map(e => "```" + e + "````").join("\n");
+                            let local_users = client.getCouponsUsers(true);
+                            for (let usr of local_users) {						
+                                try {
+                                    let local_user = await client.users.fetch(usr);
+                                    if (local_user) local_user.send({
+                                        embeds: [{
+                                            color: "#2f3136",
+                                            title: "Купоны",
+                                            url: "https://orbit-games.com/",
+                                            timestamp: new Date(),
+                                            description: codes
+                                        }]
+                                    });
+                                } catch (e) {
+                                    printError(error_here, "cannot send new coupones, "+e.message);
+                                }
+                            }							
+                        }
+                        client.setCoupons(all_coupones_list);
                     }
-                    client.setCoupons(all_coupones_list);
                 }
             }
             if (client.cfg.queue) {	
