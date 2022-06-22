@@ -101,7 +101,9 @@ async function createListers(client) {
                 const embed = new MessageEmbed()
                 .setColor("#2f3136")
                 .setTitle("Ваш список отслеживания") //e.label || "ID:`"+e.split("-")[0]+"` LVL:`"+e.split("-")[1]+"`").join("\n")
-                .setDescription(user.items.map(e => e.items.map(a => a.label || "ID:`"+a.value.split("-")[0]+" `LVL:`"+a.value.split("-")[1]+"`").join("\n")).join("\n"));
+                .setDescription(user.items.map(e => {
+                    if (e.items.length > 0) e.items.map(a => a.label || "ID:`"+a.value.split("-")[0]+" `LVL:`"+a.value.split("-")[1]+"`").join("\n");
+                }).join("\n"));
                 return interaction.update({content: "Список обновлен!", embeds: [embed], components: []});
             }
         } catch (e) { printError(error_here, "select menu listener error: "+e.message) }
