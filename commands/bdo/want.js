@@ -52,12 +52,12 @@ module.exports = {
             } else if (interaction.options.getSubcommand() === "список") {
                 let user = client.myusers.get(interaction.user.id);
                 if (!user || user.items.length < 1) return await interaction.reply({content: "Ваш список пуст!"});
+                let local_names = [];
+                user.items.map(e => e.items.map(a => local_names.push(a.label || "ID:`"+a.value.split("-")[0]+" `LVL:`"+a.value.split("-")[1]+"`")));
                 const embed = new MessageEmbed()
                 .setColor("#2f3136")
                 .setTitle("Ваш список отслеживания")
-                .setDescription(user.items.map(e => {
-                    e.items.length > 0 ? e.items.map(a => a.label || "ID:`"+a.value.split("-")[0]+" `LVL:`"+a.value.split("-")[1]+"`").join("\n") : "";
-                }).join("\n"));
+                .setDescription(local_names.join("\n"));
                 return await interaction.reply({embeds: [embed]});
             } else if (interaction.options.getSubcommand() === "отслеживать") {
                 const local_market = market.map(e => ({...e}));

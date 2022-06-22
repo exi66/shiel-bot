@@ -98,12 +98,12 @@ async function createListers(client) {
 
                 client.saveUser(interaction.user.id);
 
+                let local_names = [];
+                user.items.map(e => e.items.map(a => local_names.push(a.label || "ID:`"+a.value.split("-")[0]+" `LVL:`"+a.value.split("-")[1]+"`")));
                 const embed = new MessageEmbed()
                 .setColor("#2f3136")
                 .setTitle("Ваш список отслеживания") //e.label || "ID:`"+e.split("-")[0]+"` LVL:`"+e.split("-")[1]+"`").join("\n")
-                .setDescription(user.items.map(e => {
-                    e.items.length > 0 ? e.items.map(a => a.label || "ID:`"+a.value.split("-")[0]+" `LVL:`"+a.value.split("-")[1]+"`").join("\n") : "";
-                }).join("\n"));
+                .setDescription(local_names.join("\n"));
                 return interaction.update({content: "Список обновлен!", embeds: [embed], components: []});
             }
         } catch (e) { printError(error_here, "select menu listener error: "+e.message) }
