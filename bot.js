@@ -102,7 +102,7 @@ async function createListers(client) {
                 .setColor("#2f3136")
                 .setTitle("Ваш список отслеживания") //e.label || "ID:`"+e.split("-")[0]+"` LVL:`"+e.split("-")[1]+"`").join("\n")
                 .setDescription(user.items.map(e => {
-                    if (e.items.length > 0) e.items.map(a => a.label || "ID:`"+a.value.split("-")[0]+" `LVL:`"+a.value.split("-")[1]+"`").join("\n");
+                    e.items.length > 0 ? e.items.map(a => a.label || "ID:`"+a.value.split("-")[0]+" `LVL:`"+a.value.split("-")[1]+"`").join("\n") : "";
                 }).join("\n"));
                 return interaction.update({content: "Список обновлен!", embeds: [embed], components: []});
             }

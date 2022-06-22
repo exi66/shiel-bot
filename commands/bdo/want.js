@@ -56,7 +56,7 @@ module.exports = {
                 .setColor("#2f3136")
                 .setTitle("Ваш список отслеживания")
                 .setDescription(user.items.map(e => {
-                    if (e.items.length > 0) e.items.map(a => a.label || "ID:`"+a.value.split("-")[0]+" `LVL:`"+a.value.split("-")[1]+"`").join("\n");
+                    e.items.length > 0 ? e.items.map(a => a.label || "ID:`"+a.value.split("-")[0]+" `LVL:`"+a.value.split("-")[1]+"`").join("\n") : "";
                 }).join("\n"));
                 return await interaction.reply({embeds: [embed]});
             } else if (interaction.options.getSubcommand() === "отслеживать") {
