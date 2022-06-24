@@ -30,7 +30,7 @@ module.exports = (client) => {
                             if (!coupons_list.includes(c.toUpperCase())) new_coupones_list.push(c.toUpperCase());
                         }							
                         if (new_coupones_list.length > 0) {          
-                            let codes = new_coupones_list.map(e => "```" + e + "````").join("\n");
+                            let codes = new_coupones_list.map(e => "```" + e + "```").join("\n");
                             let local_users = client.getCouponsUsers(true);
                             for (let usr of local_users) {						
                                 let local_user = await client.users.fetch(usr);
