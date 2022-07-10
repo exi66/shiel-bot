@@ -101,10 +101,10 @@ module.exports = (client) => {
 }
 
 function lvl_to_string(lvl) {
-    if (lvl === 15 || lvl === 0) return "";
     if (lvl === 16 || lvl === 1) return "I:";
     if (lvl === 17 || lvl === 2) return "II:";
     if (lvl === 18 || lvl === 3) return "III:";
     if (lvl === 19 || lvl === 4) return "IV:";
     if (lvl === 20 || lvl === 5) return "V:";
+    return "";
 }
