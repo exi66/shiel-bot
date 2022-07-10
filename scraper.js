@@ -31,7 +31,7 @@ module.exports = (client) => {
                         }							
                         if (new_coupones_list.length > 0) {   
                             client.setCoupons(all_coupones_list);
-                                   
+
                             let codes = new_coupones_list.map(e => "```" + e + "```").join("\n");
                             let local_users = client.getCouponsUsers(true);
                             for (let usr of local_users) {						
@@ -81,7 +81,7 @@ module.exports = (client) => {
                                     client.getUsers(item.value).forEach(async (e) => {
                                         let local_user = await client.users.fetch(e);
                                         if (local_user) local_user.send({ 
-                                            content: `<@${e}>, лот **«${item.name}»** зарегистрирован на аукционе за ${item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}. Время размещения <t:${(item.time/1000).toFixed(0)}:R>`
+                                            content: `<@${e}>, лот «**${lvl_to_string(item.lvl)} ${item.name}**» зарегистрирован на аукционе за ${item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}. Время размещения <t:${(item.time/1000).toFixed(0)}:R>`
                                         });
                                     });
                                 }
@@ -98,4 +98,13 @@ module.exports = (client) => {
             printError(error_here, "general try-catch error, "+e.message);
         }
     }, client.cfg.debug ? 10*1000 : 5*60*1000);        
+}
+
+function lvl_to_string(lvl) {
+    if (lvl === 15 || lvl === 0) return "";
+    if (lvl === 16 || lvl === 1) return "I:";
+    if (lvl === 17 || lvl === 2) return "II:";
+    if (lvl === 18 || lvl === 3) return "III:";
+    if (lvl === 19 || lvl === 4) return "IV:";
+    if (lvl === 20 || lvl === 5) return "V:";
 }
