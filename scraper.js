@@ -29,7 +29,9 @@ module.exports = (client) => {
                             if (!all_coupones_list.includes(c.toUpperCase())) all_coupones_list.push(c.toUpperCase());
                             if (!coupons_list.includes(c.toUpperCase())) new_coupones_list.push(c.toUpperCase());
                         }							
-                        if (new_coupones_list.length > 0) {          
+                        if (new_coupones_list.length > 0) {   
+                            client.setCoupons(all_coupones_list);
+                                   
                             let codes = new_coupones_list.map(e => "```" + e + "```").join("\n");
                             let local_users = client.getCouponsUsers(true);
                             for (let usr of local_users) {						
@@ -45,7 +47,6 @@ module.exports = (client) => {
                                 });
                             }							
                         }
-                        client.setCoupons(all_coupones_list);
                     }
                 } catch (e) { printError(error_here, "coupones error: "+e.message) }
             }
