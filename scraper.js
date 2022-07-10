@@ -23,7 +23,7 @@ module.exports = (client) => {
                     if (body !== "" && body != null) {	
                         let div = body.match(/<div\s+id="text-15".*?>[\S\s]*?<\/div>/gi);
                         if (!div) throw new Error({ message: "div with coupones not found, need to edit regex"});
-                        let search = div[0].match(/\(?[a-zA-Z0-9]{4}\)?-?[a-zA-Z0-9]{4}?-?[a-zA-Z0-9]{4}-?[a-zA-Z0-9]{4}/gm) || [];
+                        let search = div[0].match(/[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}?(-[a-zA-Z0-9]{4})?/gm) || [];
                         let all_coupones_list = [], new_coupones_list = [], coupons_list = client.getCoupons();
                         for (let c of search) {
                             if (!all_coupones_list.includes(c.toUpperCase())) all_coupones_list.push(c.toUpperCase());
