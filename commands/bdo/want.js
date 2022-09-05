@@ -64,16 +64,16 @@ module.exports = {
                 const select_menu = new MessageActionRow()
                 .addComponents(
                     new MessageSelectMenu()
-                        .setCustomId("category")
+                        .setCustomId("category-" + interaction.user.id)
                         .setPlaceholder("Ничего не выбрано")
                         .addOptions(local_market),                       
                 );
                 const buttons = new MessageActionRow()
                 .addComponents(
                     new MessageButton()
-                        .setCustomId('cancel')
-                        .setLabel('Отмена')
-                        .setStyle('SECONDARY'),  
+                        .setCustomId("cancel-" + interaction.user.id)
+                        .setLabel("Отмена")
+                        .setStyle("SECONDARY"),  
                 );
                 return await interaction.reply({ content: "Выберите категорию", components: [select_menu, buttons] });
             } else if (interaction.options.getSubcommand() === "уведомления") {

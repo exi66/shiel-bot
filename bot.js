@@ -1,8 +1,8 @@
 const { printError } = require("./functions.js");
 const { market } = require("./data/bundles.js");
 const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageSelectMenu, MessageButton } = require("discord.js");
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
+const { REST } = require("@discordjs/rest");
+const { Routes } = require("discord-api-types/v9");
 const fs = require("fs");
 
 const where = __filename.slice(__dirname.length + 1);
@@ -26,9 +26,15 @@ async function createListers(client) {
     client.on("interactionCreate", async interaction => {
         try {
             if (!interaction.isButton()) return;
-            if (interaction.customId === "cancel") {
+            if (!interaction.customId.endsWith(interaction.user.id)) {
+                return interaction.reply({
+                    content: "Вы не можете взаимодействовать с чужой командой!",
+                    ephemeral: true
+                })
+            }
+            if (interaction.customId.includes("cancel")) {
                 return await interaction.update({ content: "Команда отменена пользователем!", components: [] });
-            } else if (interaction.customId === "clear_all") {                                                                                  
+            } else if (interaction.customId.includes("clear_all")) {                                                                                  
                 const category = interaction.message.components[0].components[0].custom_id.split("-")[0] || null;
                 if (!category) return await interaction.update({ content: "Категории не существует!", components: [] });
                 let user = client.myusers.get(interaction.user.id);
@@ -44,7 +50,13 @@ async function createListers(client) {
     client.on("interactionCreate", async interaction => {
         try {
             if (!interaction.isSelectMenu()) return;
-            if (interaction.customId === "category") {
+            if (!interaction.customId.endsWith(interaction.user.id)) {
+                return interaction.reply({
+                    content: "Вы не можете взаимодействовать с чужой командой!",
+                    ephemeral: true
+                })
+            }
+            if (interaction.customId.split("-")[0] === "category") {
                 let local_items = JSON.parse(JSON.stringify(market.find(e => e.value === interaction.values[0])));
                 if (!local_items) return await interaction.update({ content: "Категории не существует!", components: [] });
 
@@ -61,20 +73,20 @@ async function createListers(client) {
                 .addComponents(
                     new MessageSelectMenu()
                         .setMinValues(1)
-                        .setCustomId(interaction.values[0]+"-items")
+                        .setCustomId(interaction.values[0] + "-items-" + interaction.user.id)
                         .setPlaceholder("Ничего не выбрано")
                         .addOptions(local_items.items),                     
                 );
                 const buttons = new MessageActionRow()
                 .addComponents(
                     new MessageButton()
-                        .setCustomId('cancel')
-                        .setLabel('Отмена')
-                        .setStyle('SECONDARY'), 
+                        .setCustomId("cancel-" + interaction.user.id)
+                        .setLabel("Отмена")
+                        .setStyle("SECONDARY"), 
                     new MessageButton()
-                        .setCustomId('clear_all')
-                        .setLabel('Очистить')
-                        .setStyle('DANGER')
+                        .setCustomId("clear_all-" + interaction.user.id)
+                        .setLabel("Очистить")
+                        .setStyle("DANGER")
                         .setDisabled(!flag),
                 );
                 return await interaction.update({ content: "Выберите предметы", components: [select_menu, buttons] });
@@ -104,7 +116,7 @@ async function createListers(client) {
                 .setColor("#2f3136")
                 .setTitle("Ваш список отслеживания") //e.label || "ID:`"+e.split("-")[0]+"` LVL:`"+e.split("-")[1]+"`").join("\n")
                 .setDescription(local_names.join("\n"));
-                return interaction.update({content: "Список обновлен!", embeds: [embed], components: []});
+                return interaction.update({ content: "Список обновлен!", embeds: [embed], components: [] });
             }
         } catch (e) { printError(error_here, "select menu listener error: "+e.message) }
     });
@@ -184,7 +196,7 @@ module.exports = (config) => {
         return true;
     }; 
     
-    const rest = new REST({ version: '9' }).setToken(token);
+    const rest = new REST({ version: "9" }).setToken(token);
 
     ["command", "user"].forEach(handler => {
         require(`./handlers/${handler}`)(client);
