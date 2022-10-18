@@ -5,12 +5,12 @@ const where = __filename.slice(__dirname.length + 1);
 const error_here = where+"/error";
 const log_here = where+"/log";
 
+const default_timeout = 5*60*1000;
+
 module.exports = (client) => {
-    return setInterval(async function() {
+    return async function run() {
+        let start_timer = new Date();
         try {
-            let next_check_date = new Date(new Date().getTime() + 5*60*1000);
-            let next_check_time = [next_check_date.getHours(), next_check_date.getMinutes()].map(function (x) { return x < 10 ? "0" + x : x }).join(":");
-            client.user.setActivity("следующая проверка в "+next_check_time, { type: 'PLAYING' });
             if (client.cfg.coupons) {	
                 try {
                     let body = await request({
@@ -97,7 +97,11 @@ module.exports = (client) => {
         } catch (e) {
             printError(error_here, "general try-catch error, "+e.message);
         }
-    }, client.cfg.debug ? 10*1000 : 5*60*1000);        
+        let run_timer = new Date().getTime() - start_timer.getTime();
+        let next_check_time = new Date().getTime() + Math.max(0, default_timeout - run_timer);
+        client.user.setActivity("следующая проверка в "+new Date(next_check_time).toLocaleTimeString(), { type: 'PLAYING' });
+        return setTimeout(run, client.cfg.debug ? Math.max(0, default_timeout - run_timer) / 30 : Math.max(0, default_timeout - run_timer));
+    };        
 }
 
 function lvl_to_string(lvl) {
