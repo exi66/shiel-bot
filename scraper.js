@@ -112,5 +112,6 @@ function lvl_to_string(lvl) {
   if (lvl === 18 || lvl === 3) return "III:";
   if (lvl === 19 || lvl === 4) return "IV:";
   if (lvl === 20 || lvl === 5) return "V:";
-  return "";
+  if (lvl === 0) return "";
+  return lvl;
 }
