@@ -97,12 +97,13 @@ async function run(client) {
         }
       } catch (e) { printError(error_here, "market error: " + e.message) }
     }
+    let run_timer = new Date().getTime() - start_timer.getTime();
+    let next_check_time = new Date().getTime() + Math.max(0, default_timeout - run_timer);
+    client.user.setActivity("следующая проверка в " + new Date(next_check_time).toLocaleTimeString('ru-RU'), { type: 'PLAYING' });  
   } catch (e) {
     printError(error_here, "general try-catch error, " + e.message);
   }
   let run_timer = new Date().getTime() - start_timer.getTime();
-  let next_check_time = new Date().getTime() + Math.max(0, default_timeout - run_timer);
-  client.user.setActivity("следующая проверка в " + new Date(next_check_time).toLocaleTimeString('ru-RU'), { type: 'PLAYING' });
   return setTimeout(run, client.cfg.debug ? Math.max(0, default_timeout - run_timer) / 30 : Math.max(0, default_timeout - run_timer), client);
 }
 
