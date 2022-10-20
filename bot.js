@@ -132,7 +132,7 @@ async function createListers(client) {
   });
 }
 
-module.exports = (config) => {
+module.exports = async (config) => {
   const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
   let { token, ...local_config } = config;
   client.cfg = local_config;
