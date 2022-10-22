@@ -4,5 +4,5 @@ const log_here = where + "/log";
 
 
 const config = require("./config.json");
-const client = await require("./bot.js")(config);
+const client = require("./bot.js")(config);
 const scraper = require("./scraper.js")(client);
