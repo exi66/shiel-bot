@@ -8,12 +8,13 @@ const log_here = where + "/log";
 const default_timeout = 5 * 60 * 1000;
 
 module.exports = (client) => {
-  return run(client); 
+  return setInterval(run, default_timeout, client); 
 }
 
 async function run(client) {
-  let start_timer = new Date();
   try {
+    let next_check_time = new Date().getTime() + default_timeout;
+    client.user.setActivity("следующая проверка в " + new Date(next_check_time).toLocaleTimeString('ru-RU'), { type: 'PLAYING' });  
     if (client.cfg.coupons) {
       try {
         let body = await request({
@@ -97,14 +98,9 @@ async function run(client) {
         }
       } catch (e) { printError(error_here, "market error: " + e.message) }
     }
-    let run_timer = new Date().getTime() - start_timer.getTime();
-    let next_check_time = new Date().getTime() + Math.max(0, default_timeout - run_timer);
-    client.user.setActivity("следующая проверка в " + new Date(next_check_time).toLocaleTimeString('ru-RU'), { type: 'PLAYING' });  
   } catch (e) {
     printError(error_here, "general try-catch error, " + e.message);
   }
-  let run_timer = new Date().getTime() - start_timer.getTime();
-  return setTimeout(run, client.cfg.debug ? Math.max(0, default_timeout - run_timer) / 30 : Math.max(0, default_timeout - run_timer), client);
 }
 
 function lvl_to_string(lvl) {
