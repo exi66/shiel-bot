@@ -1,4 +1,13 @@
 {
+  "name": "bdo-market-wait-list",
+  "version": "2.0",
+  "description": "discord.js bot for web-scraping black desert market registration queue",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "exi66",
+  "license": "MIT",
   "dependencies": {
     "@sapphire/framework": "^4.2.2",
     "axios": "^1.3.4",

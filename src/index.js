@@ -38,7 +38,7 @@ const client = new SapphireClient({
 async function main() {
   handleUsers();
   await client.login(global.config.token);
-  require('./scraper')(client);
+  require('./scraper.js')(client);
 }
 
 function handleUsers() {
