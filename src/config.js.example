@@ -1,0 +1,14 @@
+module.exports = {
+  token: '',
+  owners: [''],
+  debug: false,
+  coupons: true,
+  queue: true,
+  regions: [
+    {
+      name: 'ru',
+      url: 'https://trade.ru.playblackdesert.com/',
+      cookie: ''
+    }
+  ]
+}
