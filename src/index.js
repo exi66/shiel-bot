@@ -33,6 +33,7 @@ const client = new SapphireClient({
     GatewayIntentBits.DirectMessageTyping,
   ],
   partials: [Partials.Channel],
+  presence: { activities: [{ name: '/settings' }] }
 });
 
 async function main() {
