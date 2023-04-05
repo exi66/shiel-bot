@@ -24,8 +24,7 @@ global.queue = {};
 global.config = require('./config');
 
 const client = new SapphireClient({
-  defaultPrefix: '!',
-  caseInsensitiveCommands: false,
+  caseInsensitiveCommands: true,
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
@@ -33,6 +32,7 @@ const client = new SapphireClient({
     GatewayIntentBits.DirectMessageTyping,
   ],
   partials: [Partials.Channel],
+  loadMessageCommandListeners: true
 });
 
 async function main() {
