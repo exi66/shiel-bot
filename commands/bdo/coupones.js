@@ -1,6 +1,6 @@
 const { Command } = require('@sapphire/framework');
 
-class CouponsCommand extends Command {
+class CouponesCommand extends Command {
   constructor(context, options) {
     super(context, {
       ...options
@@ -17,10 +17,10 @@ class CouponsCommand extends Command {
 
   async chatInputRun(interaction) {
 
-    const coupons = global.coupons;
-    if (!coupons || coupons.length < 1) return await interaction.reply({ content: 'Нет доступных купонов!', ephemeral: false, fetchReply: true, components: [] });
+    const coupones = global.coupones;
+    if (!coupones || coupones.length < 1) return await interaction.reply({ content: 'Нет доступных купонов!', ephemeral: false, fetchReply: true, components: [] });
 
-    let codes = coupons.map(e => '```' + e + '```').join('\n');
+    let codes = coupones.map(e => '```' + e + '```').join('\n');
     await interaction.reply({
       embeds: [{
         color: 3092790,
@@ -36,5 +36,5 @@ class CouponsCommand extends Command {
 }
 
 module.exports = {
-  CouponsCommand
+  CouponesCommand
 };

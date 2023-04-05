@@ -25,16 +25,17 @@ async function run() {
           let div = body.match(/<div\s+id="text-15".*?>[\S\s]*?<\/div>/gi);
           if (!div) throw 'div with coupones not found, need to edit regex';
           let search = div[0].match(/[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}?(-[a-zA-Z0-9]{4})?/gm) || [];
-          let allCouponesList = [], newCouponesList = [], couponsList = global.coupons;
+          let allCouponesList = [], newCouponesList = [], couponesList = global.coupones;
           for (let c of search) {
             if (!allCouponesList.includes(c.toUpperCase())) allCouponesList.push(c.toUpperCase());
-            if (!couponsList.includes(c.toUpperCase())) newCouponesList.push(c.toUpperCase());
+            if (!couponesList.includes(c.toUpperCase())) newCouponesList.push(c.toUpperCase());
           }
           if (newCouponesList.length > 0) {
-            global.coupons = allCouponesList;
+            global.coupones = allCouponesList;
 
             let codes = newCouponesList.map(e => '```' + e + '```').join('\n');
-            let usersList = Array.from(global.users.filter(e => e.notifications.coupons).keys());
+            let usersList = Array.from(global.users.filter(e => e.notifications.coupones).keys());
+            cons
             for (let user of usersList) {
               let localUser = await client.users.fetch(user);
               if (localUser) localUser.send({
@@ -67,14 +68,14 @@ async function run() {
           if (res.status === 200 && res.data) {
             const body = res.data;
             const data = body._waitList || [];
-            const items = data.map(e => ({ 
-              id: e.mainKey, 
-              lvl: e.chooseKey, 
-              price: e._pricePerOne, 
-              time: e._waitEndTime, 
-              name: e.name, 
-              value: e.mainKey + '-' + e.chooseKey, 
-              unique: '' + e.mainKey + e.chooseKey + e._waitEndTime 
+            const items = data.map(e => ({
+              id: e.mainKey,
+              lvl: e.chooseKey,
+              price: e._pricePerOne,
+              time: e._waitEndTime,
+              name: e.name,
+              value: e.mainKey + '-' + e.chooseKey,
+              unique: '' + e.mainKey + e.chooseKey + e._waitEndTime
             }));
             const old_items = global.queue.items || [];
             let newItems = [], loc = [];
@@ -86,7 +87,7 @@ async function run() {
             } else newItems = items;
             if (newItems.length > 0) {
               for (let item of newItems) {
-                let users = Array.from(global.users.filter(e => e.items.map(a => a.value).includes(item.value)).keys());
+                let users = Array.from(global.users.filter(e => e.items.map(a => a.value).includes(item.value) && e.notifications.queue).keys());
                 for (let user of users) {
                   let localUser = await client.users.fetch(user);
                   if (localUser) localUser.send({

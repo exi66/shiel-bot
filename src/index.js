@@ -19,7 +19,7 @@ global.saveUser = function (id = null) {
     }
   }
 }
-global.coupons = [];
+global.coupones = [];
 global.queue = {};
 global.config = require('./config');
 
