@@ -31,7 +31,7 @@ class CategorySelect extends InteractionHandler {
     const selectMenu = new ActionRowBuilder()
       .setComponents(
         new StringSelectMenuBuilder()
-          .setCustomId('item_' + interaction.values[0])
+          .setCustomId('item-' + interaction.values[0])
           .setPlaceholder('Ничего не выбрано')
           .addOptions(itemsInCategory)
           .setMaxValues(itemsInCategory.length)
@@ -39,16 +39,16 @@ class CategorySelect extends InteractionHandler {
     const buttons = new ActionRowBuilder()
       .addComponents(
         new ButtonBuilder()
-          .setCustomId('all_' + interaction.values[0])
+          .setCustomId('all-' + interaction.values[0])
           .setLabel('Все')
           .setStyle(1)
       )
       .addComponents(
         new ButtonBuilder()
-          .setCustomId('clear_' + interaction.values[0])
+          .setCustomId('clear-' + interaction.values[0])
           .setLabel('Очистить')
           .setStyle(4)
-          .setDisabled(itemsInCategory.map(e => e.default).length > 0)
+          .setDisabled(itemsInCategory.filter(e => e.default).length > 0 ? false : true)
       )
       .addComponents(
         new ButtonBuilder()

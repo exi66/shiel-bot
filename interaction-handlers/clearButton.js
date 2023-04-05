@@ -14,7 +14,7 @@ class ClearButton extends InteractionHandler {
   }
 
   async run(interaction) {
-    const cat = interaction.customId.split('_')[1];
+    const cat = interaction.customId.split('-')[1];
 
     const user = global.users.get(interaction.user.id);
     if (!user) return;

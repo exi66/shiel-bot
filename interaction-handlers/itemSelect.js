@@ -18,7 +18,7 @@ class ItemSelect extends InteractionHandler {
 
   async run(interaction) {
 
-    const cat = interaction.customId.split('_')[1];
+    const cat = interaction.customId.split('-')[1];
     const selected = interaction.values;
     const selectedItems = items.filter(e => selected.includes(e.value));
 
@@ -41,7 +41,7 @@ class ItemSelect extends InteractionHandler {
     while (localItems.length) pages.push(localItems.splice(0, length));
     const paginatedMessage = new PaginatedMessage({
       template: new EmbedBuilder()
-        .setColor('2f3136')
+        .setColor('#2f3136')
     });
     for (let page of pages) {
       paginatedMessage

@@ -41,7 +41,13 @@ class WantCommand extends Command {
       );
 
     const cancelButton = new ActionRowBuilder()
-      .setComponents(
+      .addComponents(
+        new ButtonBuilder()
+          .setCustomId('list')
+          .setLabel('Список')
+          .setStyle(1)
+      )
+      .addComponents(
         new ButtonBuilder()
           .setCustomId('cancel')
           .setLabel('Отмена')
