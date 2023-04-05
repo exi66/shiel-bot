@@ -22,7 +22,7 @@ class QueueCommand extends Command {
 
     await interaction.reply({
       embeds: [{
-        color: 3092790,
+        color: 2829617,
         title: 'Очередь аукциона',
         timestamp: new Date(queue.lastUpdate),
         fields: [

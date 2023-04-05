@@ -39,7 +39,7 @@ async function run() {
               let localUser = await client.users.fetch(user);
               if (localUser) localUser.send({
                 embeds: [{
-                  color: 3092790,
+                  color: 2829617,
                   title: 'Купоны',
                   url: 'https://orbit-games.com/',
                   timestamp: new Date(),

@@ -26,7 +26,7 @@ class ListButton extends InteractionHandler {
     while (localItems.length) pages.push(localItems.splice(0, length));
     const paginatedMessage = new PaginatedMessage({
       template: new EmbedBuilder()
-        .setColor('#2f3136')
+        .setColor(2829617)
     });
     for (let page of pages) {
       paginatedMessage
