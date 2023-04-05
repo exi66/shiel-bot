@@ -35,7 +35,6 @@ async function run() {
 
             let codes = newCouponesList.map(e => '```' + e + '```').join('\n');
             let usersList = Array.from(global.users.filter(e => e.notifications.coupones).keys());
-            cons
             for (let user of usersList) {
               let localUser = await client.users.fetch(user);
               if (localUser) localUser.send({
