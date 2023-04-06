@@ -58,9 +58,9 @@ async function run() {
     }
     if (global.config.queue) {
       try {
-        const market = global.config.regions.RU;
+        const market = global.config.region;
         if (market.url && market.cookie) {
-          const res = await axios.post(RU.url + 'Home/GetWorldMarketWaitList', {}, {
+          const res = await axios.post(market.url + 'Home/GetWorldMarketWaitList', {}, {
             headers: {
               'content-type': 'application/json',
               'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',

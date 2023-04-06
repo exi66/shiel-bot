@@ -6,10 +6,8 @@ module.exports = {
   debug: false,
   coupons: true,
   queue: true,
-  regions: {
-    RU: {
-      url: 'https://trade.ru.playblackdesert.com/',
-      cookie: ''
-    }
+  region: {
+    url: 'https://trade.ru.playblackdesert.com/',
+    cookie: ''
   }
 }
