@@ -1,5 +1,11 @@
 const { lvlToString } = require('./functions.js');
 const axios = require('axios');
+const crypto = require('crypto');
+const https = require('https');
+
+axios.defaults.httpsAgent = new https.Agent({
+  secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT,
+});
 
 const default_timeout = 5 * 60 * 1000;
 
