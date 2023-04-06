@@ -7,7 +7,7 @@ axios.defaults.httpsAgent = new https.Agent({
   secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT,
 });
 
-const default_timeout = 5 * 60 * 1000;
+const DEFAULT_TIMEOUT = 5 * 60 * 1000;
 
 let client = {};
 
@@ -17,7 +17,7 @@ module.exports = (__client) => {
 }
 
 async function run() {
-  const start_time = new Date().getTime();
+  const startTime = new Date().getTime();
   try {
     if (global.config.coupons) {
       try {
@@ -27,14 +27,13 @@ async function run() {
           }
         });
         if (res.status === 200 && res.data) {
-          const body = res.data;
-          let div = body.match(/<div\s+id="text-15".*?>[\S\s]*?<\/div>/gi);
+          let div = res.data.match(/<div\s+id="text-15".*?>[\S\s]*?<\/div>/gi);
           if (!div) throw 'div with coupones not found, need to edit regex';
           let search = div[0].match(/[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}?(-[a-zA-Z0-9]{4})?/gm) || [];
-          let allCouponesList = [], newCouponesList = [], couponesList = global.coupones;
+          let allCouponesList = [], newCouponesList = [];
           for (let c of search) {
             if (!allCouponesList.includes(c.toUpperCase())) allCouponesList.push(c.toUpperCase());
-            if (!couponesList.includes(c.toUpperCase())) newCouponesList.push(c.toUpperCase());
+            if (!global.coupones.includes(c.toUpperCase())) newCouponesList.push(c.toUpperCase());
           }
           if (newCouponesList.length > 0) {
             global.coupones = allCouponesList;
@@ -59,20 +58,19 @@ async function run() {
     }
     if (global.config.queue) {
       try {
-        const RU = global.config.regions.find(e => e.name === 'ru');
-        if (RU) {
+        const market = global.config.regions.RU;
+        if (market.url && market.cookie) {
           const res = await axios.post(RU.url + 'Home/GetWorldMarketWaitList', {}, {
             headers: {
               'content-type': 'application/json',
               'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-              'cookie': RU.cookie,
-              'referer': RU.url,
+              'cookie': market.cookie,
+              'referer': market.url,
               'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36'
             }
           });
           if (res.status === 200 && res.data) {
-            const body = res.data;
-            const data = body._waitList || [];
+            const data = res.data._waitList || [];
             const items = data.map(e => ({
               id: e.mainKey,
               lvl: e.chooseKey,
@@ -82,12 +80,11 @@ async function run() {
               value: e.mainKey + '-' + e.chooseKey,
               unique: '' + e.mainKey + e.chooseKey + e._waitEndTime
             }));
-            const old_items = global.queue.items || [];
-            let newItems = [], loc = [];
-            if (old_items.length > 0) {
-              loc = old_items.map(a => a.unique);
+            const oldItems = global.queue.items || [];
+            let newItems = [];
+            if (oldItems.length > 0) {
               items.forEach(e => {
-                if (!loc.includes(e.unique)) newItems.push(e);
+                if (!oldItems.map(a => a.unique).includes(e.unique)) newItems.push(e);
               });
             } else newItems = items;
             if (newItems.length > 0) {
@@ -112,6 +109,6 @@ async function run() {
   } catch (e) {
     console.error('general try-catch error, ' + e.message);
   }
-  const running_time = default_timeout - (new Date().getTime() - start_time);
-  setTimeout(run, Math.max(0, running_time));
+  const runningTime = DEFAULT_TIMEOUT - (new Date().getTime() - startTime);
+  setTimeout(run, Math.max(0, runningTime));
 }

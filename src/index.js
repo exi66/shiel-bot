@@ -1,5 +1,5 @@
 const { SapphireClient } = require('@sapphire/framework');
-const { GatewayIntentBits, Collection, Partials, ActivityType } = require('discord.js');
+const { GatewayIntentBits, Collection, Partials } = require('discord.js');
 const fs = require('fs-extra');
 
 global.users = new Collection();
@@ -20,11 +20,14 @@ global.saveUser = function (id = null) {
   }
 }
 global.coupones = [];
-global.queue = {};
+global.queue = { lastUpdate: new Date(), items: [] };
 global.config = require('./config');
 
 const client = new SapphireClient({
-  caseInsensitiveCommands: true,
+  defaultPrefix: global.config.prefix,
+	regexPrefix: /^(hey +)?bot[,! ]/i,
+	caseInsensitivePrefixes: true,
+	caseInsensitiveCommands: true,
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
