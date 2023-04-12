@@ -1,5 +1,5 @@
 const { SapphireClient } = require('@sapphire/framework');
-const { GatewayIntentBits, Collection, Partials } = require('discord.js');
+const { GatewayIntentBits, Collection, Partials, ActivityType } = require('discord.js');
 const fs = require('fs-extra');
 
 global.users = new Collection();
@@ -25,9 +25,9 @@ global.config = require('./config');
 
 const client = new SapphireClient({
   defaultPrefix: global.config.prefix,
-	regexPrefix: /^(hey +)?bot[,! ]/i,
-	caseInsensitivePrefixes: true,
-	caseInsensitiveCommands: true,
+  regexPrefix: /^(hey +)?bot[,! ]/i,
+  caseInsensitivePrefixes: true,
+  caseInsensitiveCommands: true,
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
@@ -35,7 +35,11 @@ const client = new SapphireClient({
     GatewayIntentBits.DirectMessageTyping,
   ],
   partials: [Partials.Channel],
-  loadMessageCommandListeners: true
+  loadMessageCommandListeners: true,
+  presence: {
+    activities: [{ name: `/settings`, type: ActivityType.Playing }],
+    status: 'online',
+  }
 });
 
 async function main() {

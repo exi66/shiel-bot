@@ -2,6 +2,7 @@ const { lvlToString } = require('./functions.js');
 const axios = require('axios');
 const crypto = require('crypto');
 const https = require('https');
+const { ActivityType } = require('discord.js');
 
 axios.defaults.httpsAgent = new https.Agent({
   secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT,
@@ -18,6 +19,12 @@ module.exports = (__client) => {
 
 async function run() {
   const startTime = new Date().getTime();
+  client.user.setPresence({
+    activities: [{
+      name: `проверка аукциона в ${new Date(startTime + DEFAULT_TIMEOUT).toLocaleTimeString('ru-RU')}`,
+      type: ActivityType.Playing
+    }]
+  });
   try {
     if (global.config.coupons) {
       try {
