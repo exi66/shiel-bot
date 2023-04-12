@@ -25,7 +25,6 @@ global.config = require('./config');
 
 const client = new SapphireClient({
   defaultPrefix: global.config.prefix,
-  regexPrefix: /^(hey +)?bot[,! ]/i,
   caseInsensitivePrefixes: true,
   caseInsensitiveCommands: true,
   intents: [
