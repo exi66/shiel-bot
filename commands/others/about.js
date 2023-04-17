@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ButtonBuilder, MessageEmbed } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require('discord.js');
 const { Command } = require('@sapphire/framework');
 
 class AboutCommand extends Command {
@@ -26,7 +26,7 @@ class AboutCommand extends Command {
           .setStyle(5)
           .setURL('https://t.me/exi666'),
       );
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setColor(2829617)
       .setTitle('О проекте')
       .setDescription('Discord.js бот для отслеживания регистрации редких предметов на аукционе игры Black Desert Online. Поддерживает только русскоговорящий регион.');
