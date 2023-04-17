@@ -108,5 +108,6 @@ module.exports = {
     { label: 'IV: Ожерелье Деборики', value: '11653-4', category: 'jewellery' }, { label: 'V: Ожерелье Деборики', value: '11653-5', category: 'jewellery' },
     { label: 'V: Ожерелье Маноса', value: '705509-5', category: 'jewellery' }, { label: 'V: Пояс Маноса', value: '705512-5', category: 'jewellery' },
     { label: 'V: Серьги Маноса', value: '705510-5', category: 'jewellery' }, { label: 'V: Кольцо Маноса', value: '705511-5', category: 'jewellery' },
+    { label: 'IV: Распад (для теста)', value: '11853-4', category: 'jewellery' }
   ]
 }

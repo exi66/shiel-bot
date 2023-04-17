@@ -100,7 +100,7 @@ async function run() {
                 for (let user of users) {
                   let localUser = await client.users.fetch(user);
                   if (localUser) localUser.send({
-                    content: `<@${e}>, лот «**${lvlToString(item.lvl)} ${item.name}**» зарегистрирован на аукционе за ${item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}. Время размещения <t:${(item.time / 1000).toFixed(0)}:R>`
+                    content: `${localUser}, лот «**${lvlToString(item.lvl)} ${item.name}**» зарегистрирован на аукционе за ${item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}. Время размещения <t:${(item.time / 1000).toFixed(0)}:R>`
                   });
                 };
               }
