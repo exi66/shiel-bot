@@ -1,6 +1,7 @@
 const { SapphireClient } = require('@sapphire/framework');
 const { GatewayIntentBits, Collection, Partials, ActivityType } = require('discord.js');
 const fs = require('fs-extra');
+const CronJob = require('cron').CronJob;
 
 global.users = new Collection();
 global.saveUser = function (id = null) {
@@ -19,7 +20,7 @@ global.saveUser = function (id = null) {
     }
   }
 }
-global.coupones = [];
+global.coupones = null;
 global.queue = { lastUpdate: new Date(), items: [] };
 global.config = require('./config');
 
@@ -44,7 +45,15 @@ const client = new SapphireClient({
 async function main() {
   handleUsers();
   await client.login(global.config.token);
-  require('./scraper.js')(client);
+  const scraper = require('./scraper.js')(client);
+  new CronJob(
+    '0 * * * * *',
+    function () {
+      scraper();
+    },
+    null,
+    true,
+  )
 }
 
 function handleUsers() {
