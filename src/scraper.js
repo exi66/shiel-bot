@@ -25,12 +25,8 @@ async function run() {
       type: ActivityType.Playing
     }]
   });
-  if (global.config.coupons) {
-    getCoupones()
-  }
-  if (global.config.queue) {
-    getQueue()
-  }
+  if (global.config.coupons) getCoupones();
+  if (global.config.queue) getQueue();
   //const runningTime = DEFAULT_TIMEOUT - (new Date().getTime() - startTime);
   //setTimeout(run, Math.max(0, runningTime));
 }
