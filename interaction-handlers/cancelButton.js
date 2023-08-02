@@ -1,15 +1,18 @@
-const { InteractionHandler, InteractionHandlerTypes } = require('@sapphire/framework');
+const {
+  InteractionHandler,
+  InteractionHandlerTypes,
+} = require("@sapphire/framework");
 
 class CancelButton extends InteractionHandler {
   constructor(ctx, options) {
     super(ctx, {
       ...options,
-      interactionHandlerType: InteractionHandlerTypes.Button
+      interactionHandlerType: InteractionHandlerTypes.Button,
     });
   }
 
   parse(interaction) {
-    if (interaction.customId !== 'cancel') return this.none();
+    if (interaction.customId !== "cancel") return this.none();
     return this.some();
   }
 
@@ -22,5 +25,5 @@ class CancelButton extends InteractionHandler {
 }
 
 module.exports = {
-  CancelButton
+  CancelButton,
 };

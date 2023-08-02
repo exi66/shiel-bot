@@ -1,4 +1,4 @@
-const { Precondition } = require('@sapphire/framework');
+const { Precondition } = require("@sapphire/framework");
 
 class OwnerOnlyPrecondition extends Precondition {
   async messageRun(message) {
@@ -16,10 +16,12 @@ class OwnerOnlyPrecondition extends Precondition {
   async checkOwner(userId) {
     return global.config.owners.includes(userId)
       ? this.ok()
-      : this.error({ message: 'Только владелец бота может использовать эту команду!' });
+      : this.error({
+          message: "Только владелец бота может использовать эту команду!",
+        });
   }
 }
 
 module.exports = {
-  OwnerOnlyPrecondition
+  OwnerOnlyPrecondition,
 };
