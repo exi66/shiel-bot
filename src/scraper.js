@@ -48,7 +48,7 @@ async function getCoupones() {
         /(?<=(<div\s+id="text-15".*?>))(.*)(?=(<\/div>))/gi
       );
       if (!div) throw "div with coupones not found, need to edit regex";
-      div[0] = div[0].replaceALL(/(<([^>]+)>)/gi, "");
+      div[0] = div[0].replace(/(<([^>]+)>)/gi, "");
       let search =
         div[0].match(
           /[a-zA-Z0-9!]{4}-[a-zA-Z0-9!]{4}-[a-zA-Z0-9]{4}?(-[a-zA-Z0-9!]{4})?/gm
