@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { SapphireClient } = require("@sapphire/framework");
 const {
   GatewayIntentBits,
