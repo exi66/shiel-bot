@@ -136,16 +136,18 @@ async function getQueue() {
           });
         } else newItems = items;
         if (newItems.length > 0) {
+          const User = global.db.users;
+          let usersList = await User.findAll({
+            where: {
+              notification_queue: true,
+            },
+          });
           for (let item of newItems) {
-            const User = global.db.users;
-            let usersList = await User.findAll({
-              where: {
-                notification_queue: true,
-              },
-            });
-            usersList = usersList.filter((e) => e.items.includes(item.value));
-            for (let user of usersList) {
-              let localUser = await client.users.fetch(user);
+            let localUsersList = usersList.filter((e) =>
+              e.items.includes(item.value)
+            );
+            for (let user of localUsersList) {
+              let localUser = await client.users.fetch(user.discord_id);
               if (localUser)
                 localUser.send({
                   content: `${localUser}, лот «**${lvlToString(item.lvl)} ${
