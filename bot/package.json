@@ -1,6 +1,6 @@
 {
   "name": "bdo-market-wait-list",
-  "version": "2.0",
+  "version": "3.0",
   "description": "discord.js bot for web-scraping black desert market registration queue",
   "scripts": {
     "start": "node ./src/index.js",
