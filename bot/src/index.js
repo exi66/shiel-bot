@@ -42,7 +42,7 @@ async function main() {
       const Link = global.db.links;
       Link.destroy({
         where: {
-          expired_id: {
+          expired_at: {
             [Op.lte]: new Date(),
           },
         },
