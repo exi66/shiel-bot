@@ -176,7 +176,8 @@ export default {
           Настройки предметов
         </span>
       </div>
-      <multiselect class="dark:bg-slate-800 dark:border-white dark:border-opacity-20 transition-all" v-model="items"
+      <multiselect id="itemsSelect" name="itemsSelect"
+        class="dark:bg-slate-800 dark:border-white dark:border-opacity-20 transition-all" v-model="items"
         :options="selectItems" mode="tags" noResultsText="Нет совпадений" noOptionsText="Нет данных" locale="ru"
         :closeOnSelect="false" :clearOnSelect="false" :canClear="false" :searchable="true" :caret="false">
         <template #option="{ option }">
