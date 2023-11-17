@@ -69,11 +69,14 @@ async function getCoupones() {
         global.coupones = allCouponesList;
 
         let codes = newCouponesList.map((e) => "```" + e + "```").join("\n");
-        let usersList = Array.from(
-          global.users.filter((e) => e.notifications.coupones).keys()
-        );
+        const User = global.db.users;
+        let usersList = await User.findAll({
+          where: {
+            notification_coupones: true,
+          },
+        });
         for (let user of usersList) {
-          let localUser = await client.users.fetch(user);
+          let localUser = await client.users.fetch(user.discord_id);
           if (localUser)
             localUser.send({
               embeds: [
@@ -134,16 +137,14 @@ async function getQueue() {
         } else newItems = items;
         if (newItems.length > 0) {
           for (let item of newItems) {
-            let users = Array.from(
-              global.users
-                .filter(
-                  (e) =>
-                    e.items.map((a) => a.value).includes(item.value) &&
-                    e.notifications.queue
-                )
-                .keys()
-            );
-            for (let user of users) {
+            const User = global.db.users;
+            let usersList = await User.findAll({
+              where: {
+                notification_queue: true,
+              },
+            });
+            usersList = usersList.filter((e) => e.items.includes(item.value));
+            for (let user of usersList) {
               let localUser = await client.users.fetch(user);
               if (localUser)
                 localUser.send({
