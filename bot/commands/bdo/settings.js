@@ -65,7 +65,7 @@ class WantCommand extends Command {
       expired_at: expired.getTime(),
     });
 
-    await interaction.followUp({
+    await interaction.editReply({
       content: `Вы можете настроить свои уведомления по [это ссылке](${
         global.config.hostname
       }${linkHash})\r\nСсылка истечет через <t:${Math.floor(
