@@ -38,6 +38,14 @@ async function main() {
     "0 * * * * *",
     function () {
       scraper();
+      const Link = global.db.links;
+      Link.destroy({
+        where: {
+          expired_id: {
+            [Op.lte]: new Date(),
+          },
+        },
+      });
     },
     null,
     true
