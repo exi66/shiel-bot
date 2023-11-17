@@ -193,6 +193,37 @@ export default {
       </div>
     </div>
   </main>
+  <main class="container mx-auto p-4 flex flex-col gap-4" v-else>
+    <div class="relative shadow-md w-full text-gray-700 bg-gray-50 dark:bg-slate-700 dark:text-gray-400 p-5 rounded-md">
+      <div class="flex mb-4">
+        <span class="text-lg font-bold text-white w-full">
+          О проекте
+        </span>
+      </div>
+      <div class="mb-4">
+        Discord.js бот для отслеживания регистрации редких предметов на аукционе игры Black Desert Online. Поддерживает
+        только русскоговорящий регион
+      </div>
+      <div class="flex gap-4">
+        <a href="https://discord.com/api/oauth2/authorize?client_id=822596673524072529&permissions=0&scope=bot"
+          target="_blank" type="button"
+          class="px-3 py-2 text-xs font-medium text-center inline-flex rounded text-white bg-blue-700 dark:bg-blue-500 hover:opacity-80 transition-all disabled:cursor-wait">
+          Добавить бота<i class="bi bi-box-arrow-up-right ms-2"></i>
+        </a>
+        <a href="https://new.donatepay.ru/@exi" target="_blank" type="button"
+          class="px-3 py-2 text-xs font-medium text-center inline-flex rounded text-white bg-blue-700 dark:bg-blue-500 hover:opacity-80 transition-all disabled:cursor-wait">
+          Поддержать<i class="bi bi-box-arrow-up-right ms-2"></i>
+        </a>
+      </div>
+    </div>
+  </main>
+  <footer class="container mx-auto px-4">
+    <div class="w-full flex flex-row opacity-80">
+      <a href="https://github.com/exi66/bdo-market-wait-list" class="hover:underline">
+        <i class="bi bi-github me-2 text-xl"></i><small class="my-auto">by exi66</small>
+      </a>
+    </div>
+  </footer>
 </template>
 
 <style src="@vueform/multiselect/themes/tailwind.css"></style>
