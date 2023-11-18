@@ -220,22 +220,9 @@ export default {
             {{ values.length + ' ' + Funs.declOfNum(values.length, ['предмет', 'предмета', 'предметов']) }} выбрано
           </div>
         </template>
-        <!-- <template #tag="{ option, disabled, handleTagRemove }">
-          <div class="flex m-0 p-0 w-full">
-            <img v-bind:src="option.icon" class="my-auto w-[34px] h-[34px] border rounded-sm" alt="icon"
-              :class="option.grade > 3 ? 'border-[#ce5f4a]' : 'border-[#f3b93c]'">
-            <span class="my-auto mx-2" :class="option.grade > 3 ? 'text-[#ce5f4a]' : 'text-[#f3b93c]'">
-              {{ option.label }}
-            </span>
-            <button v-show="!disabled" @click="handleTagRemove(option, $event)" type="button"
-              class="ml-auto p-2 hover:opacity-80 transition-all" style="line-height: 0;">
-              <i class="bi bi-x"></i>
-            </button>
-          </div>
-        </template> -->
       </multiselect>
       <div v-show="items.length > 0"
-        class="mt-4 border dark:bg-slate-800 dark:border-white dark:border-opacity-20 transition-all rounded flex flex-col overflow-y-auto max-h-[28.25rem]">
+        class="mt-4 border dark:bg-slate-800 dark:border-white dark:border-opacity-20 transition-all rounded flex flex-col overflow-y-scroll max-h-[28.25rem]">
         <div v-for="item in items" :key="item" class="flex p-2 odd:bg-slate-700 odd:bg-opacity-30">
           <img :src="getItemByID(item).icon" class="my-auto w-[34px] h-[34px] border rounded-sm" alt="icon"
             :class="getItemByID(item).grade > 3 ? 'border-[#ce5f4a]' : 'border-[#f3b93c]'">
