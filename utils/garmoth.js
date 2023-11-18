@@ -55,7 +55,7 @@ async function run(config) {
           e.name.toLowerCase().includes("перчатки тана")) ||
         (e.market_main_category == 15 &&
           e.name.toLowerCase().includes("атора")) ||
-        (e.market_main_category == 20 && e.sub_key >= 4)
+        (e.market_main_category == 20 && b.sub_key >= 4)
     );
     for (let _r of r) {
       final.push({
