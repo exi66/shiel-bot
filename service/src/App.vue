@@ -49,7 +49,7 @@ export default {
       return this.allItems.map(e => ({
         label: e.name + '' + Funs.lvlToString(e.enhancement_level),
         value: e.id + '-' + e.enhancement_level,
-        icon: "https://cdn.bdolytics.com/img/" + e.icon + ".webp",
+        icon: "https://cdn.bdolytics.com/img/" + e.icon,
         grade: e.grade
       }));
     },
