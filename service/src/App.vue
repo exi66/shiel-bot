@@ -46,13 +46,21 @@ export default {
       return this.id !== null;
     },
     selectItems() {
-      return this.allItems.map(e => ({ label: e.name + '' + Funs.lvlToString(e.enhancement_level), value: e.id + '-' + e.enhancement_level }));
+      return this.allItems.map(e => ({
+        label: e.name + '' + Funs.lvlToString(e.enhancement_level),
+        value: e.id + '-' + e.enhancement_level,
+        icon: "https://cdn.bdolytics.com/img/" + e.icon + ".webp",
+        grade: e.grade
+      }));
     },
     isEdited() {
       return JSON.stringify(this.items) != JSON.stringify(this.prevItems)
     },
   },
   methods: {
+    cancelItems() {
+      this.items = this.prevItems;
+    },
     async saveItems() {
       this.waitAPI = true;
       this.errorsAPI = [];
@@ -181,15 +189,36 @@ export default {
         :options="selectItems" mode="tags" noResultsText="Нет совпадений" noOptionsText="Нет данных" locale="ru"
         :closeOnSelect="false" :clearOnSelect="false" :canClear="false" :searchable="true" :caret="false">
         <template #option="{ option }">
-          <div class="flex m-0 p-0">
-            <span class="my-auto mx-2 truncate max-w-full">{{ option.label }}</span>
+          <div class="flex m-0 p-0 w-full">
+            <img v-bind:src="option.icon" class="my-auto w-[34px] h-[34px] border rounded-sm" alt="icon"
+              :class="option.grade > 3 ? 'border-[#ce5f4a]' : 'border-[#f3b93c]'">
+            <span class="my-auto mx-2" :class="option.grade > 3 ? 'text-[#ce5f4a]' : 'text-[#f3b93c]'">
+              {{ option.label }}
+            </span>
+          </div>
+        </template>
+        <template #tag="{ option, disabled, handleTagRemove }">
+          <div class="flex m-0 p-0 w-full">
+            <img v-bind:src="option.icon" class="my-auto w-[34px] h-[34px] border rounded-sm" alt="icon"
+              :class="option.grade > 3 ? 'border-[#ce5f4a]' : 'border-[#f3b93c]'">
+            <span class="my-auto mx-2" :class="option.grade > 3 ? 'text-[#ce5f4a]' : 'text-[#f3b93c]'">
+              {{ option.label }}
+            </span>
+            <button v-show="!disabled" @click="handleTagRemove(option, $event)" type="button"
+              class="ml-auto p-2 hover:opacity-80 transition-all" style="line-height: 0;">
+              <i class="bi bi-x"></i>
+            </button>
           </div>
         </template>
       </multiselect>
-      <div v-show="isEdited" class="mt-4 flex w-full">
+      <div v-show="isEdited" class="mt-4 flex w-full gap-4">
         <button type="button" @click="saveItems" :disabled="waitAPI"
           class="ml-auto px-3 py-2 text-xs font-medium text-center inline-flex rounded text-white bg-blue-700 dark:bg-blue-500 hover:opacity-80 transition-all disabled:cursor-wait">
           Сохранить
+        </button>
+        <button type="button" @click="cancelItems"
+          class="px-3 py-2 text-xs font-medium text-center inline-flex rounded text-white bg-red-700 dark:bg-red-500 hover:opacity-80 transition-all disabled:cursor-wait">
+          Отменить
         </button>
       </div>
     </div>
@@ -248,7 +277,7 @@ export default {
 .dark .multiselect-dropdown {
   background-color: theme('colors.slate.800');
   color: theme('colors.white');
-  border-color: rgb(255 255 255 / .2);
+  border-color: rgb(255 255 255 / 0.2);
 }
 
 .dark .multiselect-clear-icon {
@@ -268,9 +297,11 @@ export default {
 }
 
 .multiselect-tags {
-  padding-right: .25rem;
-  padding-left: .25rem !important;
+  gap: 0.5rem;
+  padding: 0 !important;
+  margin: 0.5rem !important;
   flex-direction: column-reverse;
+  align-items: normal;
 }
 
 .multiselect-tag-remove {
@@ -293,11 +324,10 @@ export default {
 .dark .multiselect-no-results {
   background-color: theme('colors.slate.800');
   color: theme('colors.white');
-  border-color: rgb(255 255 255 / .2);
+  border-color: rgb(255 255 255 / 0.2);
 }
 
 .multiselect-option.is-pointed {
-  background-color: rgb(59 130 246 / .5) !important;
-  color: white !important;
+  background-color: rgb(255 255 255 / 0.1) !important;
 }
 </style>
