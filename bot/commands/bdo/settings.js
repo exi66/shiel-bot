@@ -74,6 +74,7 @@ class WantCommand extends Command {
       ephemeral: true,
       fetchReply: true,
     });
+    setTimeout(() => interaction.deleteReply(), 1000 * 10 * 60);
   }
 }
 
