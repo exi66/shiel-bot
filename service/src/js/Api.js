@@ -12,7 +12,7 @@ export default {
         result
       try {
         let res = await axios.post(host + 'items/get.php', {
-          user: window.id
+          token: window.token
         })
         if (res.data.errors) {
           for (let e of res.data.errors) console.error(e)
@@ -36,7 +36,7 @@ export default {
     async edit(items) {
       let errors = [],
         warns = [],
-        data = { user: window.id },
+        data = { token: window.token },
         result
 
       data.items = items
@@ -85,7 +85,7 @@ export default {
         result
       try {
         let res = await axios.post(host + 'coupons/get.php', {
-          user: window.id
+          token: window.token
         })
         if (res.data.errors) {
           for (let e of res.data.errors) console.error(e)
@@ -111,7 +111,7 @@ export default {
         result
       try {
         let res = await axios.post(host + 'coupons/toggle.php', {
-          user: window.id
+          token: window.token
         })
         if (res.data.errors) {
           for (let e of res.data.errors) console.error(e)
@@ -139,7 +139,7 @@ export default {
         result
       try {
         let res = await axios.post(host + 'queue/get.php', {
-          user: window.id
+          token: window.token
         })
         if (res.data.errors) {
           for (let e of res.data.errors) console.error(e)
@@ -165,7 +165,7 @@ export default {
         result
       try {
         let res = await axios.post(host + 'queue/toggle.php', {
-          user: window.id
+          token: window.token
         })
         if (res.data.errors) {
           for (let e of res.data.errors) console.error(e)

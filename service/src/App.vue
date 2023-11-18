@@ -11,7 +11,7 @@ export default {
   },
   data() {
     return {
-      id: window.id || null,
+      token: window.token || null,
       prevItems: [],
       items: [],
       allItems: [],
@@ -43,7 +43,7 @@ export default {
   },
   computed: {
     allowSettings() {
-      return this.id !== null;
+      return this.token !== null;
     },
     selectItems() {
       return this.allItems.map(e => ({

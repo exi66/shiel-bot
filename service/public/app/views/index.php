@@ -8,7 +8,8 @@
   <script defer type="module" src="/bdo-market/app/assets/main.js?<?= rand() ?>"></script>
   <title>Настройки уведомлений</title>
   <script>
-    window.id = "<?= $link->link ?>";
+    window.token = "<?= $link->link ?>";
+    window.expired = "<?= date("c", strtotime($link->expired_at)) ?>";
   </script>
 </head>
 

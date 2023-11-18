@@ -14,7 +14,7 @@ $json = json_decode(file_get_contents('php://input'), true) ?? [];
 $validator = new Validator;
 
 $validation = $validator->make($_REQUEST + $json, [
-  'user' => 'required',
+  'token' => 'required',
   'items' => 'array'
 ]);
 
@@ -27,7 +27,7 @@ if ($validation->fails()) {
 
 $validData = $validation->getValidData();
 
-$link = Link::where('link', $validData['user'])->first();
+$link = Link::where('link', $validData['token'])->first();
 if (!$link) {
   http_response_code(401);
   exit();
