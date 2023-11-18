@@ -58,6 +58,24 @@ export default {
     },
   },
   methods: {
+    getItemByID(id) {
+      if (!id) return;
+      const __id = parseInt(id.split('-')[0]);
+      const __lvl = parseInt(id.split('-')[1]);
+
+      let e = this.allItems.find(e => e.id == __id && e.enhancement_level == __lvl);
+      return e ? {
+        label: e.name + '' + Funs.lvlToString(e.enhancement_level),
+        value: e.id + '-' + e.enhancement_level,
+        icon: "https://cdn.bdolytics.com/img/" + e.icon,
+        grade: e.grade
+      } : {
+        label: `Неизвестный ${id}`,
+        value: id,
+        icon: null,
+        grade: 0
+      }
+    },
     cancelItems() {
       this.items = this.prevItems;
     },
@@ -186,7 +204,7 @@ export default {
       </div>
       <multiselect id="itemsSelect" name="itemsSelect"
         class="dark:bg-slate-800 dark:border-white dark:border-opacity-20 transition-all" v-model="items"
-        :options="selectItems" mode="tags" noResultsText="Нет совпадений" noOptionsText="Нет данных" locale="ru"
+        :options="selectItems" mode="multiple" noResultsText="Нет совпадений" noOptionsText="Нет данных" locale="ru"
         :closeOnSelect="false" :clearOnSelect="false" :canClear="false" :searchable="true" :caret="false">
         <template #option="{ option }">
           <div class="flex m-0 p-0 w-full">
@@ -197,7 +215,12 @@ export default {
             </span>
           </div>
         </template>
-        <template #tag="{ option, disabled, handleTagRemove }">
+        <template v-slot:multiplelabel="{ values }">
+          <div class="multiselect-multiple-label">
+            {{ values.length + ' ' + Funs.declOfNum(values.length, ['предмет', 'предмета', 'предметов']) }} выбрано
+          </div>
+        </template>
+        <!-- <template #tag="{ option, disabled, handleTagRemove }">
           <div class="flex m-0 p-0 w-full">
             <img v-bind:src="option.icon" class="my-auto w-[34px] h-[34px] border rounded-sm" alt="icon"
               :class="option.grade > 3 ? 'border-[#ce5f4a]' : 'border-[#f3b93c]'">
@@ -209,8 +232,23 @@ export default {
               <i class="bi bi-x"></i>
             </button>
           </div>
-        </template>
+        </template> -->
       </multiselect>
+      <div v-show="items.length > 0"
+        class="mt-4 border dark:bg-slate-800 dark:border-white dark:border-opacity-20 transition-all rounded flex flex-col overflow-y-auto max-h-[28.25rem]">
+        <div v-for="item in items" :key="item" class="flex p-2 odd:bg-slate-700 odd:bg-opacity-30">
+          <img :src="getItemByID(item).icon" class="my-auto w-[34px] h-[34px] border rounded-sm" alt="icon"
+            :class="getItemByID(item).grade > 3 ? 'border-[#ce5f4a]' : 'border-[#f3b93c]'">
+          <span class="my-auto mx-2" :class="getItemByID(item).grade > 3 ? 'text-[#ce5f4a]' : 'text-[#f3b93c]'">
+            {{ getItemByID(item).label }}
+          </span>
+          <button v-show="!disabled" @click="items = items.filter(e => e !== item)" type="button"
+            class="ml-auto p-2 text-red-500 hover:text-opacity-100 hover:bg-opacity-50 transition-all bg-opacity-0 bg-slate-700 rounded"
+            style="line-height: 0;">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </div>
+      </div>
       <div v-show="isEdited" class="mt-4 flex w-full gap-4">
         <button type="button" @click="saveItems" :disabled="waitAPI"
           class="ml-auto px-3 py-2 text-xs font-medium text-center inline-flex rounded text-white bg-blue-700 dark:bg-blue-500 hover:opacity-80 transition-all disabled:cursor-wait">
@@ -264,6 +302,8 @@ export default {
 
 .multiselect input {
   background-color: transparent;
+  position: static;
+  min-height: 38px;
 }
 
 .multiselect.is-active {
@@ -272,6 +312,10 @@ export default {
 
 .dark .multiselect.is-active {
   --tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity)) !important;
+}
+
+.multiselect-dropdown {
+  max-height: 19rem;
 }
 
 .dark .multiselect-dropdown {
@@ -284,43 +328,6 @@ export default {
   background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 320 512' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M207.6 256l107.72-107.72c6.23-6.23 6.23-16.34 0-22.58l-25.03-25.03c-6.23-6.23-16.34-6.23-22.58 0L160 208.4 52.28 100.68c-6.23-6.23-16.34-6.23-22.58 0L4.68 125.7c-6.23 6.23-6.23 16.34 0 22.58L112.4 256 4.68 363.72c-6.23 6.23-6.23 16.34 0 22.58l25.03 25.03c6.23 6.23 16.34 6.23 22.58 0L160 303.6l107.72 107.72c6.23 6.23 16.34 6.23 22.58 0l25.03-25.03c6.23-6.23 6.23-16.34 0-22.58L207.6 256z'%3e%3c/path%3e%3c/svg%3e");
 }
 
-.multiselect-tag {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  margin-right: 0.5rem !important;
-  width: 100%;
-  background-color: rgb(29 78 216 / var(--tw-bg-opacity)) !important;
-}
-
-.dark .multiselect-tag {
-  background-color: rgb(59 130 246 / var(--tw-bg-opacity)) !important;
-}
-
-.multiselect-tags {
-  gap: 0.5rem;
-  padding: 0 !important;
-  margin: 0.5rem !important;
-  flex-direction: column-reverse;
-  align-items: normal;
-}
-
-.multiselect-tag-remove {
-  margin-left: auto;
-}
-
-.dark .multiselect-tag-remove-icon {
-  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 320 512' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M207.6 256l107.72-107.72c6.23-6.23 6.23-16.34 0-22.58l-25.03-25.03c-6.23-6.23-16.34-6.23-22.58 0L160 208.4 52.28 100.68c-6.23-6.23-16.34-6.23-22.58 0L4.68 125.7c-6.23 6.23-6.23 16.34 0 22.58L112.4 256 4.68 363.72c-6.23 6.23-6.23 16.34 0 22.58l25.03 25.03c6.23 6.23 16.34 6.23 22.58 0L160 303.6l107.72 107.72c6.23 6.23 16.34 6.23 22.58 0l25.03-25.03c6.23-6.23 6.23-16.34 0-22.58L207.6 256z'%3e%3c/path%3e%3c/svg%3e");
-}
-
-.multiselect-tags-search-wrapper {
-  width: 100%;
-}
-
-.multiselect-tags-search {
-  display: block;
-  width: 100%;
-}
-
 .dark .multiselect-no-results {
   background-color: theme('colors.slate.800');
   color: theme('colors.white');
@@ -328,6 +335,6 @@ export default {
 }
 
 .multiselect-option.is-pointed {
-  background-color: rgb(255 255 255 / 0.1) !important;
+  background-color: rgb(51 65 85 / 0.5) !important;
 }
 </style>
