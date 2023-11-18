@@ -33,7 +33,7 @@ async function run(config) {
       market_main_category: e.market_main_category,
       market_sub_category: e.market_sub_category,
       name: e.name,
-      icon: e.icon_image.toLowerCase(),
+      icon: e.icon_image.toLowerCase() + ".webp",
       grade: e.grade_type,
     }));
 
@@ -50,7 +50,7 @@ async function run(config) {
     return a.market_main_category - b.market_main_category;
   });
 
-  fs.writeFileSync("./edited.json", JSON.stringify(edited));
+  fs.writeFileSync("./edited-bdolytics.json", JSON.stringify(edited));
 }
 
 run();
