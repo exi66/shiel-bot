@@ -14,8 +14,7 @@ async function run(config) {
           e.name?.toLowerCase().includes("черной звезды") ||
           (e.main_category == 15 &&
             e.sub_category !== 5 &&
-            e.sub_category !== 6 &&
-            e.enhancement_level == 20) ||
+            e.sub_category !== 6) ||
           (e.main_category == 15 &&
             e.name?.toLowerCase().includes("лабрескас")) ||
           (e.main_category == 15 &&
@@ -41,20 +40,17 @@ async function run(config) {
         (e.market_main_category == 1 && b.sub_key == 20) ||
         (e.market_main_category == 5 && b.sub_key == 20) ||
         (e.market_main_category == 10 && b.sub_key == 20) ||
-        e.name.toLowerCase().includes("глаза роде") ||
-        (e.name.toLowerCase().includes("черной звезды") && b.sub_key > 18) ||
+        e.name?.toLowerCase().includes("глаза роде") ||
+        (e.name?.toLowerCase().includes("черной звезды") && b.sub_key > 18) ||
+        (e.market_main_category == 15 && b.sub_key == 20) ||
         (e.market_main_category == 15 &&
-          e.market_sub_category !== 5 &&
-          e.market_sub_category !== 6 &&
-          b.sub_key == 20) ||
+          e.name?.toLowerCase().includes("лабрескас")) ||
         (e.market_main_category == 15 &&
-          e.name.toLowerCase().includes("лабрескас")) ||
+          e.name?.toLowerCase().includes("мертвого бога")) ||
         (e.market_main_category == 15 &&
-          e.name.toLowerCase().includes("мертвого бога")) ||
+          e.name?.toLowerCase().includes("перчатки тана")) ||
         (e.market_main_category == 15 &&
-          e.name.toLowerCase().includes("перчатки тана")) ||
-        (e.market_main_category == 15 &&
-          e.name.toLowerCase().includes("атора")) ||
+          e.name?.toLowerCase().includes("атора")) ||
         (e.market_main_category == 20 && b.sub_key >= 4)
     );
     for (let _r of r) {

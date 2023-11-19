@@ -41,6 +41,12 @@ export default {
       await this.getQueue();
       this.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
     }
+    this.$refs.itemsSelect.input.addEventListener('keydown', (e) => {
+      if (e.which === 8 && !e.target.value.length) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+      }
+    });
     this.loading = false;
   },
   computed: {
@@ -222,7 +228,7 @@ export default {
           Настройки предметов
         </span>
       </div>
-      <multiselect id="itemsSelect" name="itemsSelect"
+      <multiselect id="itemsSelect" name="itemsSelect" ref="itemsSelect"
         class="dark:bg-slate-800 dark:border-white dark:border-opacity-20 transition-all" v-model="items"
         :options="selectItems" mode="multiple" noResultsText="Нет совпадений" noOptionsText="Нет данных" locale="ru"
         :closeOnSelect="false" :clearOnSelect="false" :canClear="false" :searchable="true" :caret="false">
