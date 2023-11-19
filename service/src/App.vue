@@ -39,14 +39,14 @@ export default {
       await this.getItems();
       await this.getCoupons();
       await this.getQueue();
-      this.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      this.$refs.itemsSelect.input.addEventListener('keydown', (e) => {
+        if (e.which === 8 && !e.target.value.length) {
+          e.stopImmediatePropagation();
+          e.preventDefault();
+        }
+      });
     }
-    this.$refs.itemsSelect.input.addEventListener('keydown', (e) => {
-      if (e.which === 8 && !e.target.value.length) {
-        e.stopImmediatePropagation();
-        e.preventDefault();
-      }
-    });
+    this.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
     this.loading = false;
   },
   computed: {
