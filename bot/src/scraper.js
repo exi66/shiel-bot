@@ -37,22 +37,32 @@ async function run() {
 
 async function getCoupones() {
   try {
-    const res = await axios.get("https://orbit-games.com/", {
-      headers: {
-        "User-Agent":
-          "bdo-market-wait-list https://github.com/exi66/bdo-market-wait-list",
-      },
-    });
+    const res = await axios.get(
+      "https://orbit-games.com/black-desert/vse-kupony-bdo/",
+      {
+        headers: {
+          "User-Agent":
+            "bdo-market-wait-list https://github.com/exi66/bdo-market-wait-list",
+        },
+      }
+    );
     if (res.status === 200 && res.data) {
-      let div = res.data.match(
-        /(?<=(<div\s+id="text-15".*?>))(.*)(?=(<\/div>))/gi
+      let figures = res.data.match(
+        /<figure\s+class="wp-block-table is-style-stripes">[\S\s]*?<\/figure>/gi
       );
-      if (!div) throw "div with coupones not found, need to edit regex";
-      div[0] = div[0].replace(/(<([^>]+)>)/gi, "");
-      let search =
-        div[0].match(
-          /[a-zA-Z0-9!]{4}-[a-zA-Z0-9!]{4}-[a-zA-Z0-9]{4}?(-[a-zA-Z0-9!]{4})?/gm
-        ) || [];
+      if (!figures.length < 0)
+        throw "figures with coupones not found, need to edit regex or empty";
+      let search = [];
+      for (let f of figures) {
+        let c = f
+          .replace(/(<([^>]+)>)/gi, "")
+          .match(
+            /[a-zA-Z0-9!]{4}-[a-zA-Z0-9!]{4}-[a-zA-Z0-9]{4}?(-[a-zA-Z0-9!]{4})?/gm
+          );
+        if (c[0]) {
+          search.push(c[0]);
+        }
+      }
       if (global.coupones === null) {
         global.coupones = search;
         return;
@@ -83,7 +93,7 @@ async function getCoupones() {
                 {
                   color: 2829617,
                   title: "Купоны",
-                  url: "https://orbit-games.com/",
+                  url: "https://orbit-games.com/black-desert/vse-kupony-bdo/",
                   timestamp: new Date(),
                   description: codes,
                 },
