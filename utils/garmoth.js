@@ -79,7 +79,7 @@ async function run(config) {
     return a.market_main_category - b.market_main_category;
   });
 
-  fs.writeFileSync("./edited-garmoth.json", JSON.stringify(final));
+  fs.writeFileSync("./result/garmoth.json", JSON.stringify(final));
 }
 
 run();

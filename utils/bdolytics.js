@@ -50,7 +50,7 @@ async function run(config) {
     return a.market_main_category - b.market_main_category;
   });
 
-  fs.writeFileSync("./edited-bdolytics.json", JSON.stringify(edited));
+  fs.writeFileSync("./result/bdolytics.json", JSON.stringify(edited));
 }
 
 run();

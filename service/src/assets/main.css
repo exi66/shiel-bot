@@ -1,57 +1,80 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import './base.css';
 
 html.dark {
-  background-color: theme(colors.slate.900);
+  background: theme(colors.shark.950);
   color-scheme: dark;
+  color: theme(colors.white / 90%);
+}
+
+button,
+a {
+  @apply outline-none;
+}
+
+button:focus-visible,
+a:focus-visible {
+  @apply ring-2 ring-accent/60 rounded;
 }
 
 body {
-  scrollbar-width: none;
-  color: var(--main-color);
+  font-family: 'Open Sans', sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
 }
 
-body::-webkit-scrollbar {
-  width: 0;
-  display: none;
+*::selection {
+  background-color: theme(colors.accent / 30%);
 }
 
-:root {
+.dark *::selection {
+  background-color: theme(colors.accent / 50%);
 }
 
-select {
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 0.5rem center;
-  background-size: 1em;
-  padding-right: 1.75rem !important;
+.container-md {
+  width: 100%;
 }
 
-select:focus-visible,
-input:focus-visible,
-button:focus-visible,
-textarea:focus-visible,
-select:focus,
-input:focus,
-button:focus,
-textarea:focus,
-select:focus-within,
-input:focus-within,
-button:focus-within,
-textarea:focus-within,
-select:active,
-input:active,
-button:active,
-textarea:active {
-  outline: none;
+@media (min-width: 640px) {
+  .container-md {
+    max-width: 640px;
+  }
 }
 
-.dark select {
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+@media (min-width: 768px) {
+  .container-md {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-md {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container-md {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container-md {
+    max-width: 1024px;
+  }
+}
+
+.fade-enter-active {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.fade-leave-active {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
