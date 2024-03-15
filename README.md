@@ -11,8 +11,8 @@
 
 Для запуска необходимо:
 
-1. создат в `/bot/src/config.js` со структорой, аналогичной `/bot/src/config.js.example` и заполнить все поля
-2. создат в `/service/public/.env` со структорой, аналогичной `/service/public/.env.example` и заполнить все поля
+1. создать в `/bot/src/config.js` со структорой, аналогичной `/bot/src/config.js.example` и заполнить все поля
+2. создать в `/service/public/.env` со структорой, аналогичной `/service/public/.env.example` и заполнить все поля
 3. установить все зависимости. В `/bot/` это только `npm i`, в `/service/` это `npm i && cd public && composer install && composer update`.
 4. установить `mariadb` или сменить поставщиков в файлах `/bot/src/config.js` и `/service/public/bootstrap.php` на другую базу данных. Предусмотрена работа только с реляционными
 5. выполнить миграцию бд путем последовательного вызова файлов в каталоге `/service/public/database`
