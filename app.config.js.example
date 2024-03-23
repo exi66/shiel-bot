@@ -7,7 +7,7 @@ module.exports.discord = {
 
 module.exports.service = {
   port: 3000, //port
-  host: '', //hostname, used for /settings commdand in bot, also, your need to change hostname for frontend in /src/js/Api.js
+  host: '', //hostname, used for /settings commdand in bot and in express server. if use subfolders - settings up your reverse proxy to application root
   coupons: true, //you can disable coupons parser by passing false
   queue: true, //you can disable queue parser by passing false
   market: {
