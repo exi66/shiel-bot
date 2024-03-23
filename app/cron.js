@@ -45,7 +45,7 @@ async function getCoupones(client) {
   try {
     const res = await axios.get('https://orbit-games.com/black-desert/vse-kupony-bdo/', {
       headers: {
-        'User-Agent': 'bdo-market-wait-list https://github.com/exi66/bdo-market-wait-list'
+        'User-Agent': 'bdo-market-wait-list https://github.com/exi66/shiel-bot'
       }
     })
     if (res.status === 200 && res.data) {

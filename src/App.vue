@@ -316,7 +316,7 @@ onMounted(async () => {
   </main>
   <footer class="container mx-auto px-3">
     <div class="w-full flex flex-row opacity-80">
-      <a href="https://github.com/exi66/bdo-market-wait-list" class="hover:underline flex">
+      <a href="https://github.com/exi66/shiel-bot" class="hover:underline flex">
         <i class="bi bi-github me-2 text-xl"></i><small class="my-auto">by exi66</small>
       </a>
     </div>

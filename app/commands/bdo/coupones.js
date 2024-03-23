@@ -27,7 +27,7 @@ class CouponesCommand extends Command {
     const embed = new EmbedBuilder()
       .setColor(3092790)
       .setTitle('Купоны')
-      .setURL('https://orbit-games.com/')
+      .setURL('https://orbit-games.com/black-desert/vse-kupony-bdo/')
       .setDescription(coupones.map((e) => '```' + e + '```').join('\n'))
     await interaction.reply({
       embeds: [embed],

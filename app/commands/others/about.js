@@ -19,7 +19,7 @@ class AboutCommand extends Command {
       new ButtonBuilder()
         .setLabel('GitHub')
         .setStyle(5)
-        .setURL('https://github.com/exi66/bdo-market-wait-list'),
+        .setURL('https://github.com/exi66/shiel-bot'),
       new ButtonBuilder().setLabel('Telegram').setStyle(5).setURL('https://t.me/exi666')
     )
     const embed = new EmbedBuilder()

@@ -1,10 +1,10 @@
 {
-  "name": "bdo-market-wait-list",
-  "version": "4.0.0-dev",
+  "name": "shiel-bot",
+  "version": "4.0.4-dev",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/exi66/bdo-market-wait-list"
+    "url": "https://github.com/exi66/shiel-bot"
   },
   "main": "app/index.js",
   "dependencies": {
