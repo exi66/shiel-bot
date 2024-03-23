@@ -1,6 +1,5 @@
 app.config.js
 .data
-public/all.json
 
 # Logs
 logs
