@@ -1,0 +1,13 @@
+.data
+app
+config
+dist
+migrations
+models
+node_modules
+public
+utils
+views
+app.config.js
+postcss.config.js
+!src/*

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/assets/main.css" />
+    <script defer type="module" src="/assets/main.js"></script>
+    <% if(typeof link !== 'undefined' && typeof user !== 'undefined' && typeof items !==
+    'undefined'){ %>
+    <title>Настройки уведомлений</title>
+    <script>
+      window.token = '<%- link.token %>';
+      window.expired = <%- link.expiredAt %>;
+      window.notifyCoupons = <%- user.notifyCoupons %>;
+      window.notifyQueue = <%- user.notifyQueue %>;
+      window.items = <%- JSON.stringify(items) %>;
+    </script>
+    <% } else{ %>
+    <title>Главная</title>
+    <% } %>
+  </head>
+
+  <body id="app">
+    <noscript>Sorry, this site requires javascript</noscript>
+  </body>
+</html>

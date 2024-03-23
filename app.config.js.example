@@ -1,0 +1,18 @@
+module.exports.discord = {
+  token: '', //bot token
+  clientId: '', //bot id
+  owners: [''], //discord users ids, that can use bot commands with owner Only preconditions
+  prefix: '!' //default prefix for non slash commands
+}
+
+module.exports.service = {
+  port: 3000, //port
+  host: '', //hostname, used for /settings commdand in bot, also, your need to change hostname for frontend in /src/js/Api.js
+  coupons: true, //you can disable coupons parser by passing false
+  queue: true, //you can disable queue parser by passing false
+  market: {
+    //data for queue parser. Url and cookies
+    url: 'https://trade.ru.playblackdesert.com/',
+    cookie: ''
+  }
+}

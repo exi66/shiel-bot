@@ -1,7 +1,16 @@
-const fs = require("fs-extra");
+const fs = require('fs-extra')
+const axios = require('axios')
 
-async function run(config) {
-  let json = require("./market.json");
+async function run() {
+  try {
+    let json = require(__dirname + '/market.json')
+  } catch (e) {
+    throw new Error(`Garmoth has a cloudflare protection for API as well. Use in local mode or run bdolytics.
+      1. Download the json from https://api.garmoth.com/api/market-alerts/market?region=ru&lang=ru
+      2. Place it in the /utils directory and run the script`)
+  }
+  // let res = await axios.get('https://api.garmoth.com/api/market-alerts/market?region=ru&lang=ru')
+  // let json = res.data
 
   let edited = json.items
     .filter(
@@ -10,18 +19,13 @@ async function run(config) {
         (e.main_category == 1 ||
           e.main_category == 5 ||
           e.main_category == 10 ||
-          e.name?.toLowerCase().includes("глаза роде") ||
-          e.name?.toLowerCase().includes("черной звезды") ||
-          (e.main_category == 15 &&
-            e.sub_category !== 5 &&
-            e.sub_category !== 6) ||
-          (e.main_category == 15 &&
-            e.name?.toLowerCase().includes("лабрескас")) ||
-          (e.main_category == 15 &&
-            e.name?.toLowerCase().includes("мертвого бога")) ||
-          (e.main_category == 15 &&
-            e.name?.toLowerCase().includes("перчатки тана")) ||
-          (e.main_category == 15 && e.name?.toLowerCase().includes("атора")) ||
+          e.name?.toLowerCase().includes('глаза роде') ||
+          e.name?.toLowerCase().includes('черной звезды') ||
+          (e.main_category == 15 && e.sub_category !== 5 && e.sub_category !== 6) ||
+          (e.main_category == 15 && e.name?.toLowerCase().includes('лабрескас')) ||
+          (e.main_category == 15 && e.name?.toLowerCase().includes('мертвого бога')) ||
+          (e.main_category == 15 && e.name?.toLowerCase().includes('перчатки тана')) ||
+          (e.main_category == 15 && e.name?.toLowerCase().includes('атора')) ||
           e.main_category == 20)
     )
     .map((e) => ({
@@ -31,28 +35,24 @@ async function run(config) {
       market_sub_category: e.sub_category,
       name: e.name,
       icon: e.img.toLowerCase(),
-      grade: e.grade,
-    }));
-  let final = [];
+      grade: e.grade
+    }))
+  let final = []
   for (let e of edited) {
     let r = e.sub_items.filter(
       (b) =>
         (e.market_main_category == 1 && b.sub_key == 20) ||
         (e.market_main_category == 5 && b.sub_key == 20) ||
         (e.market_main_category == 10 && b.sub_key == 20) ||
-        e.name?.toLowerCase().includes("глаза роде") ||
-        (e.name?.toLowerCase().includes("черной звезды") && b.sub_key > 18) ||
+        e.name?.toLowerCase().includes('глаза роде') ||
+        (e.name?.toLowerCase().includes('черной звезды') && b.sub_key > 18) ||
         (e.market_main_category == 15 && b.sub_key == 20) ||
-        (e.market_main_category == 15 &&
-          e.name?.toLowerCase().includes("лабрескас")) ||
-        (e.market_main_category == 15 &&
-          e.name?.toLowerCase().includes("мертвого бога")) ||
-        (e.market_main_category == 15 &&
-          e.name?.toLowerCase().includes("перчатки тана")) ||
-        (e.market_main_category == 15 &&
-          e.name?.toLowerCase().includes("атора")) ||
+        (e.market_main_category == 15 && e.name?.toLowerCase().includes('лабрескас')) ||
+        (e.market_main_category == 15 && e.name?.toLowerCase().includes('мертвого бога')) ||
+        (e.market_main_category == 15 && e.name?.toLowerCase().includes('перчатки тана')) ||
+        (e.market_main_category == 15 && e.name?.toLowerCase().includes('атора')) ||
         (e.market_main_category == 20 && b.sub_key >= 4)
-    );
+    )
     for (let _r of r) {
       final.push({
         id: e.id,
@@ -61,8 +61,8 @@ async function run(config) {
         market_sub_category: e.market_sub_category,
         name: e.name,
         icon: e.icon.toLowerCase(),
-        grade: e.grade,
-      });
+        grade: e.grade
+      })
     }
   }
 
@@ -70,16 +70,16 @@ async function run(config) {
     if (a.market_main_category === b.market_main_category) {
       if (a.market_sub_category === b.market_sub_category) {
         if (a.id === b.id) {
-          return a.enhancement_level - b.enhancement_level;
+          return a.enhancement_level - b.enhancement_level
         }
-        return a.id - b.id;
+        return a.id - b.id
       }
-      return a.market_sub_category - b.market_sub_category;
+      return a.market_sub_category - b.market_sub_category
     }
-    return a.market_main_category - b.market_main_category;
-  });
+    return a.market_main_category - b.market_main_category
+  })
 
-  fs.writeFileSync("./result/garmoth.json", JSON.stringify(final));
+  fs.writeFileSync(__dirname + '/../public/all.json', JSON.stringify(final))
 }
 
-run();
+run()
