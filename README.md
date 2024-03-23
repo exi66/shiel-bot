@@ -8,8 +8,7 @@
 ## Запуск
 
 1. Создайте `app.config.js` по аналогии с `app.config.js.example`
-2. В `/src/js/Api.js` смените **hostname** на корректный
-3. Запустите
+2. Запустите
 
 ```
 npm i && npm run build && npm run start

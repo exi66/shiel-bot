@@ -2,20 +2,23 @@ const express = require('express')
 const { checkLink, updateItems, toggleQueue, toggleCoupons } = require(__dirname + '/db.js')
 const { service } = require(__dirname + '/../app.config.js')
 const bodyParser = require('body-parser')
+const path = require('path')
+const { URL } = require('url')
 const app = express()
+const router = express.Router()
 
 app.use(bodyParser.json())
 
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/../views')
 
-app.use(express.static(__dirname + '/../dist/'))
+router.use(express.static(path.join(__dirname, '..', 'dist')))
 
-app.get('/', async (req, res) => {
+router.get('/', async (req, res) => {
   res.render('index')
 })
 
-app.get('/:token', async (req, res) => {
+router.get('/:token', async (req, res) => {
   const token = req.params.token
   const data = await checkLink(token)
   if (data) {
@@ -23,7 +26,7 @@ app.get('/:token', async (req, res) => {
   } else res.render('index')
 })
 
-app.post('/:token/items/edit', async (req, res) => {
+router.post('/:token/items/edit', async (req, res) => {
   const token = req.params.token
   const body = req.body
 
@@ -46,20 +49,22 @@ app.post('/:token/items/edit', async (req, res) => {
   return res.status(401).json({ errors: ['The token does not exist or has expired!'] })
 })
 
-app.get('/:token/queue/toggle', async (req, res) => {
+router.get('/:token/queue/toggle', async (req, res) => {
   const token = req.params.token
 
   if (await toggleQueue(token)) return res.json({ result: true })
   return res.status(401).json({ errors: ['The token does not exist or has expired!'] })
 })
 
-app.get('/:token/coupons/toggle', async (req, res) => {
+router.get('/:token/coupons/toggle', async (req, res) => {
   const token = req.params.token
 
   if (await toggleCoupons(token)) return res.json({ result: true })
   return res.status(401).json({ errors: ['The token does not exist or has expired!'] })
 })
 
+const pathname = new URL(service.host).pathname
+app.use(pathname, router)
 app.listen(service.port, () => {
   console.log(`Web-app listening on port ${service.port}`)
 })
