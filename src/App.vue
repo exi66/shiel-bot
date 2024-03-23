@@ -190,11 +190,11 @@ onMounted(async () => {
       </div>
       <div class="flex gap-4">
         <button type="button" @click="toggleQueue" :disabled="waitAPI" :aria-checked="notifyQueue"
-          class="p-2 text-center text-sm font-semibold leading-4 border border-accent text-accent rounded uppercase transition-all dark:hover:text-shark-900 hover:text-white hover:bg-accent  aria-checked:bg-accent dark:aria-checked:text-shark-900 aria-checked:text-white aria-checked:border-accent aria-checked:hover:opacity-80 disabled:opacity-50 disabled:cursor-wait">
+          class="p-2 text-center text-sm font-semibold leading-4 border border-accent text-accent rounded uppercase transition-all dark:hover:text-shark-900 hover:text-white hover:bg-accent  aria-checked:bg-accent dark:aria-checked:text-shark-900 aria-checked:text-white aria-checked:border-accent aria-checked:hover:opacity-80 disabled:cursor-wait">
           Уведомления о аукционе
         </button>
         <button type="button" @click="toggleCoupons" :disabled="waitAPI" :aria-checked="notifyCoupons"
-          class="p-2 text-center text-sm font-semibold leading-4 border border-accent text-accent rounded uppercase transition-all dark:hover:text-shark-900 hover:text-white hover:bg-accent  aria-checked:bg-accent dark:aria-checked:text-shark-900 aria-checked:text-white aria-checked:border-accent aria-checked:hover:opacity-80 disabled:opacity-50 disabled:cursor-wait">
+          class="p-2 text-center text-sm font-semibold leading-4 border border-accent text-accent rounded uppercase transition-all dark:hover:text-shark-900 hover:text-white hover:bg-accent  aria-checked:bg-accent dark:aria-checked:text-shark-900 aria-checked:text-white aria-checked:border-accent aria-checked:hover:opacity-80 disabled:cursor-wait">
           Уведомления о купонах
         </button>
       </div>
