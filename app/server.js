@@ -9,8 +9,11 @@ app.use(bodyParser.json())
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/../views')
 
-app.use('/assets', express.static(__dirname + '/../dist/'))
-app.use('/public', express.static(__dirname + '/../public/'))
+app.use(express.static(__dirname + '/../dist/'))
+
+app.get('/', async (req, res) => {
+  res.render('index')
+})
 
 app.get('/:token', async (req, res) => {
   const token = req.params.token
@@ -20,7 +23,7 @@ app.get('/:token', async (req, res) => {
   } else res.render('index')
 })
 
-app.post('/api/:token/items/edit', async (req, res) => {
+app.post('/:token/items/edit', async (req, res) => {
   const token = req.params.token
   const body = req.body
 
@@ -43,14 +46,14 @@ app.post('/api/:token/items/edit', async (req, res) => {
   return res.status(401).json({ errors: ['The token does not exist or has expired!'] })
 })
 
-app.get('/api/:token/queue/toggle', async (req, res) => {
+app.get('/:token/queue/toggle', async (req, res) => {
   const token = req.params.token
 
   if (await toggleQueue(token)) return res.json({ result: true })
   return res.status(401).json({ errors: ['The token does not exist or has expired!'] })
 })
 
-app.get('/api/:token/coupons/toggle', async (req, res) => {
+app.get('/:token/coupons/toggle', async (req, res) => {
   const token = req.params.token
 
   if (await toggleCoupons(token)) return res.json({ result: true })

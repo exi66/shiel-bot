@@ -11,7 +11,6 @@ export default defineConfig({
       nodeIntegration: true
     }
   },
-  publicDir: false,
   base: '',
   plugins: [vue(), tailwindcss()],
   resolve: {
