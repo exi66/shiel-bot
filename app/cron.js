@@ -49,13 +49,11 @@ async function getCoupones(client) {
       }
     })
     if (res.status === 200 && res.data) {
-      const figures = res.data.match(
-        /<figure\s+class="wp-block-table is-style-stripes">[\S\s]*?<\/figure>/gi
-      )
-      if (!figures || figures.length < 0)
-        throw 'figures with coupones not found, need to edit regex or empty'
+      const strong = res.data.match(/<strong>[\S\s]*?<\/strong>/gi)
+      if (!strong || strong.length < 0)
+        throw 'strong with coupones not found, need to edit regex or empty'
       const search = []
-      for (const f of figures) {
+      for (const f of strong) {
         const c = f
           .replace(/(<([^>]+)>)/gi, '')
           .match(/[a-zA-Z0-9!]{4}-[a-zA-Z0-9!]{4}-[a-zA-Z0-9]{4}?(-[a-zA-Z0-9!]{4})?/gm)
