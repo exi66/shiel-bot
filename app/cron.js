@@ -57,7 +57,7 @@ async function getCoupones(client) {
         const c = f
           .replace(/(<([^>]+)>)/gi, '')
           .match(/[a-zA-Z0-9!]{4}-[a-zA-Z0-9!]{4}-[a-zA-Z0-9]{4}?(-[a-zA-Z0-9!]{4})?/gm)
-        if (c[0]) {
+        if (c && c[0]) {
           search.push(c[0])
         }
       }
