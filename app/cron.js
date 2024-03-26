@@ -52,7 +52,7 @@ async function getCoupones(client) {
       const figures = res.data.match(
         /<figure\s+class="wp-block-table is-style-stripes">[\S\s]*?<\/figure>/gi
       )
-      if (!figures.length < 0) throw 'figures with coupones not found, need to edit regex or empty'
+      if (figures.length < 0) throw 'figures with coupones not found, need to edit regex or empty'
       const search = []
       for (const f of figures) {
         const c = f
