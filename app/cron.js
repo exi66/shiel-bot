@@ -58,17 +58,14 @@ async function getCoupones(client) {
           .replace(/(<([^>]+)>)/gi, '')
           .match(/[a-zA-Z0-9!]{4}-[a-zA-Z0-9!]{4}-[a-zA-Z0-9]{4}?(-[a-zA-Z0-9!]{4})?/gm)
         if (c && c[0]) {
-          search.push(c[0])
+          search.push(c[0].toUpperCase())
         }
       }
       //Set coupones if this is first iteration after run app
-      if (global.coupones === null) global.coupones = search.map((e) => e.toUpperCase())
+      if (global.coupones === null) global.coupones = search
 
-      const newCoupones = search
-        .map((e) => e.toUpperCase())
-        .filter((e) => !global.coupones.includes(e))
+      const newCoupones = search.filter((e) => !global.coupones.includes(e))
       if (newCoupones.length > 0) {
-        global.coupones = global.coupones.concat(newCoupones)
         const embed = new EmbedBuilder()
           .setColor(2829617)
           .setTitle('Купоны')
@@ -85,6 +82,7 @@ async function getCoupones(client) {
           if (__user) localUser.send({ embeds: [embed] })
         }
       }
+      global.coupones = search
     }
   } catch (e) {
     console.error(`[${new Date().toISOString()}] coupones worker error: `, e)
