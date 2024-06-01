@@ -7,6 +7,7 @@ const { URL } = require('url')
 const app = express()
 const router = express.Router()
 
+app.use(express.static('dist'));
 app.use(bodyParser.json())
 
 app.set('view engine', 'ejs')
@@ -18,15 +19,15 @@ router.get('/', async (req, res) => {
   res.render('index')
 })
 
-router.get('/:token', async (req, res) => {
+router.get('/user/:token', async (req, res) => {
   const token = req.params.token
   const data = await checkLink(token)
   if (data) {
     res.render('index', data)
-  } else res.render('index')
+  } else res.redirect('/')
 })
 
-router.post('/:token/items/edit', async (req, res) => {
+router.post('/user/:token/items/edit', async (req, res) => {
   const token = req.params.token
   const body = req.body
 
@@ -49,14 +50,14 @@ router.post('/:token/items/edit', async (req, res) => {
   return res.status(401).json({ errors: ['The token does not exist or has expired!'] })
 })
 
-router.get('/:token/queue/toggle', async (req, res) => {
+router.get('/user/:token/queue/toggle', async (req, res) => {
   const token = req.params.token
 
   if (await toggleQueue(token)) return res.json({ result: true })
   return res.status(401).json({ errors: ['The token does not exist or has expired!'] })
 })
 
-router.get('/:token/coupons/toggle', async (req, res) => {
+router.get('/user/:token/coupons/toggle', async (req, res) => {
   const token = req.params.token
 
   if (await toggleCoupons(token)) return res.json({ result: true })

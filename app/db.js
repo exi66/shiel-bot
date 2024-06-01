@@ -52,7 +52,7 @@ module.exports.createLink = async function (userId) {
   }, 1000 * 10 * 60)
 
   return {
-    link: service.host + linkHash,
+    link: service.host + 'user/' + linkHash,
     expired: expired
   }
 }

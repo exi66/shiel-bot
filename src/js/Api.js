@@ -24,7 +24,7 @@ export default {
         result
 
       try {
-        let res = await axios.post(`./${token}/items/edit`, items)
+        let res = await axios.post(`/user/${token}/items/edit`, items)
         if (res.data.errors) {
           for (let e of res.data.errors) console.error(e)
           errors = res.data.errors
@@ -53,7 +53,7 @@ export default {
         result
 
       try {
-        let res = await axios.get('all.json')
+        let res = await axios.get('/all.json')
         result = res.data
       } catch (e) {
         console.error(e)
@@ -77,7 +77,7 @@ export default {
         warns = [],
         result
       try {
-        let res = await axios.get(`./${token}/coupons/toggle`)
+        let res = await axios.get(`/user/${token}/coupons/toggle`)
         if (res.data.errors) {
           for (let e of res.data.errors) console.error(e)
           errors = res.data.errors
@@ -113,7 +113,7 @@ export default {
         warns = [],
         result
       try {
-        let res = await axios.get(`./${token}/queue/toggle`)
+        let res = await axios.get(`/user/${token}/queue/toggle`)
         if (res.data.errors) {
           for (let e of res.data.errors) console.error(e)
           errors = res.data.errors
