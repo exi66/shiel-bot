@@ -2,8 +2,9 @@ const fs = require('fs-extra')
 const axios = require('axios')
 
 async function run() {
+  let json
   try {
-    let json = require(__dirname + '/market.json')
+    json = require(__dirname + '/market.json')
   } catch (e) {
     throw new Error(`Garmoth has a cloudflare protection for API as well. Use in local mode or run bdolytics.
       1. Download the json from https://api.garmoth.com/api/market-alerts/market?region=ru&lang=ru
