@@ -14,9 +14,9 @@ COPY --chown=node:node . .
 
 RUN npm run vite:build
 
-# RUN npm rebuild sqlite3
+RUN npm rebuild sqlite3
 
-RUN npm run migrate
+# RUN npm run migrate
 
 EXPOSE 3003
 
