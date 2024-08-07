@@ -1,8 +1,8 @@
 FROM node:latest
 
-RUN mkdir -p /home/node/app/node_modules
+RUN mkdir -p /root/app/node_modules
 
-WORKDIR /home/node/app
+WORKDIR /root/app
 
 COPY package*.json .
 
