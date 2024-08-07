@@ -12,6 +12,8 @@ RUN npm install
 
 COPY --chown=node:node . .
 
+COPY --chown=node:node ../files .
+
 RUN npm run vite:build
 
 RUN npm rebuild sqlite3
