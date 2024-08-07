@@ -1,6 +1,6 @@
 FROM node:latest
 
-RUN mkdir -p /home/node/app/node_modules && chown -R /home/node/app
+RUN mkdir -p /home/node/app/node_modules
 
 WORKDIR /home/node/app
 
