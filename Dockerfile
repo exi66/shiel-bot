@@ -20,4 +20,4 @@ RUN npm rebuild sqlite3
 
 EXPOSE 3003
 
-CMD node app/index.js
+CMD npm run start

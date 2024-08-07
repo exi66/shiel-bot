@@ -28,7 +28,7 @@
     "vite:lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .eslintignore",
     "vite:format": "prettier --write src/",
     "dev": "vite build && cross-env NODE_ENV=development node app/index.js",
-    "migrate": "cross-env NODE_ENV=development npx sequelize-cli db:migrate",
+    "migrate": "cross-env NODE_ENV=production npx sequelize-cli db:migrate",
     "migrate:undo": "cross-env NODE_ENV=development npx sequelize-cli db:migrate:undo:all",
     "utils:garmoth": "node utils/garmoth.js",
     "utils:bdolytics": "node utils/bdolytics.js",
