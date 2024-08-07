@@ -16,6 +16,8 @@ RUN npm run vite:build
 
 RUN npm rebuild sqlite3
 
+RUN npm run migrate
+
 EXPOSE 3003
 
 CMD node app/index.js
