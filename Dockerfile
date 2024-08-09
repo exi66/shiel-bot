@@ -11,6 +11,7 @@ RUN npm install
 COPY . .
 
 RUN npm run vite:build
+
 RUN npm rebuild sqlite3
 
 # RUN npm run migrate
