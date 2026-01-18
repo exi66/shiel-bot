@@ -16,13 +16,14 @@ class PingCommand extends Command {
   }
 
   async chatInputRun(interaction) {
-    const msg = await interaction.reply({
+    const callbackResponse = await interaction.reply({
       content: `Ping?`,
       flags: [MessageFlags.Ephemeral],
       withResponse: true
     })
+    const msg = callbackResponse.resource?.message
 
-    if (isMessageInstance(msg)) {
+    if (msg && isMessageInstance(msg)) {
       const diff = msg.createdTimestamp - interaction.createdTimestamp
       const ping = Math.round(this.container.client.ws.ping)
       return interaction.editReply(`Pong 🏓! (Задержка бота: ${diff}ms. Задержка API: ${ping}ms.)`)
