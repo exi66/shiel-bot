@@ -1,5 +1,6 @@
 const { isMessageInstance } = require('@sapphire/discord.js-utilities')
 const { Command } = require('@sapphire/framework')
+const { MessageFlags } = require('discord.js')
 
 class PingCommand extends Command {
   constructor(context, options) {
@@ -17,8 +18,8 @@ class PingCommand extends Command {
   async chatInputRun(interaction) {
     const msg = await interaction.reply({
       content: `Ping?`,
-      ephemeral: true,
-      fetchReply: true
+      flags: [MessageFlags.Ephemeral],
+      withResponse: true
     })
 
     if (isMessageInstance(msg)) {
