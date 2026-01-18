@@ -19,8 +19,7 @@ class CouponesCommand extends Command {
     if (!coupones || coupones.length < 1) {
       return await interaction.reply({
         content: 'Нет доступных купонов!',
-        ephemeral: false,
-        fetchReply: true
+        withResponse: true
       })
     }
 
@@ -31,8 +30,7 @@ class CouponesCommand extends Command {
       .setDescription(coupones.map((e) => '```' + e + '```').join('\n'))
     await interaction.reply({
       embeds: [embed],
-      ephemeral: false,
-      fetchReply: true
+      withResponse: true
     })
   }
 }

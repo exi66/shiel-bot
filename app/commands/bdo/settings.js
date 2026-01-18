@@ -1,5 +1,6 @@
 const { Command } = require('@sapphire/framework')
 const { createLink } = require(__dirname + '/../../db.js')
+const { MessageFlags } = require('discord.js')
 
 class WantCommand extends Command {
   constructor(context, options) {
@@ -17,8 +18,8 @@ class WantCommand extends Command {
   async chatInputRun(interaction) {
     await interaction.reply({
       content: 'Выполнение...',
-      ephemeral: true,
-      fetchReply: true
+      flags: [MessageFlags.Ephemeral],
+      withResponse: true
     })
 
     const result = await createLink(interaction.user.id)
@@ -27,8 +28,8 @@ class WantCommand extends Command {
       content: `Вы можете настроить свои уведомления по [это ссылке](${
         result.link
       })\r\nСсылка истечет через <t:${Math.floor(result.expired.getTime() / 1000)}:R>`,
-      ephemeral: true,
-      fetchReply: true
+      flags: [MessageFlags.Ephemeral],
+      withResponse: true
     })
 
     setTimeout(() => {

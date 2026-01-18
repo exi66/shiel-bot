@@ -19,8 +19,7 @@ class QueueCommand extends Command {
     if (!queue.items || queue.items.length < 1) {
       return await interaction.reply({
         content: 'Очередь аукциона пуста.',
-        ephemeral: false,
-        fetchReply: true
+        withResponse: true
       })
     }
 
@@ -47,8 +46,7 @@ class QueueCommand extends Command {
       .setTimestamp(new Date(queue.lastUpdate))
     await interaction.reply({
       embeds: [embed],
-      ephemeral: false,
-      fetchReply: true
+      withResponse: true
     })
   }
 }
