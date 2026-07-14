@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { Check, ChevronsUpDown, Search, Trash2 } from "lucide-react";
+import { Check, ChevronsUpDown, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -158,7 +158,7 @@ export function ItemSelect({
             return (
               <div
                 key={keyOf(v)}
-                className="flex items-center gap-2 p-2 odd:bg-muted/30"
+                className="flex items-center gap-2 p-2 odd:bg-accent/10"
               >
                 <ItemIcon icon={opt?.icon} grade={opt?.grade ?? 0} />
                 <span
@@ -168,12 +168,12 @@ export function ItemSelect({
                 </span>
                 <Button
                   size="icon"
-                  variant="destructive"
+                  variant="ghost"
                   className="ml-auto shrink-0 size-8"
                   disabled={disabled}
                   onClick={() => remove(v)}
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <X className="h-4 w-4" />
                 </Button>
               </div>
             );
@@ -226,7 +226,7 @@ function VirtualItemList({
                 height: row.size,
                 transform: `translateY(${row.start}px)`,
               }}
-              className="flex items-center gap-2 rounded-sm ps-1 pe-2 text-left text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+              className="flex items-center gap-2 rounded-sm ps-1 pe-2 text-left text-sm hover:bg-accent hover:text-accent-foreground"
             >
               <ItemIcon icon={opt.icon} grade={opt.grade} />
               <span className={cn("truncate", gradeText(opt.grade))}>
@@ -234,7 +234,7 @@ function VirtualItemList({
               </span>
               <Check
                 className={cn(
-                  "ml-auto h-4 w-4 shrink-0",
+                  "ml-auto h-4 w-4 shrink-0 text-primary",
                   selectedKeys.has(opt.key) ? "opacity-100" : "opacity-0",
                 )}
               />

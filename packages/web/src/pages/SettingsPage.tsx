@@ -142,7 +142,7 @@ function ToggleRow({
 }) {
   return (
     <label className="flex items-center justify-between rounded-lg border px-3 py-2 cursor-pointer">
-      <span className="font-medium">{label}</span>
+      <span className="font-medium text-sm">{label}</span>
       <Switch checked={active} disabled={disabled} onCheckedChange={onToggle} />
     </label>
   );
@@ -160,7 +160,7 @@ function SettingsSkeleton() {
               key={i}
               className="flex items-center justify-between rounded-lg border px-3 py-2"
             >
-              <Skeleton className="h-6 w-48" />
+              <Skeleton className="h-5 w-48" />
               <Skeleton className="h-5 w-9 rounded-full" />
             </div>
           ))}
