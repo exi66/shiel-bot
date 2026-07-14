@@ -14,4 +14,5 @@ cmds = ["pnpm install --frozen-lockfile"]
 cmds = ["pnpm build:web"]
 
 [start]
-cmd = "pnpm start:server"
+# Бот + сервер параллельно в одном контейнере (pnpm -r --parallel run start).
+cmd = "pnpm start"
