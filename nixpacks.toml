@@ -1,0 +1,17 @@
+# Сборка и запуск сервера (он же хостит собранный React из web/dist).
+
+providers = ["node"]
+
+[phases.setup]
+# Node + pnpm; build-tools на случай нативной сборки better-sqlite3.
+nixPkgs = ["nodejs_20", "pnpm-9_x", "python3", "gcc", "gnumake"]
+
+[phases.install]
+cmds = ["pnpm install --frozen-lockfile"]
+
+[phases.build]
+# Собираем фронт — сервер раздаёт web/dist.
+cmds = ["pnpm build:web"]
+
+[start]
+cmd = "pnpm start:server"

@@ -1,0 +1,25 @@
+{
+  "name": "shiel-bot",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/exi66/shiel-bot"
+  },
+  "scripts": {
+    "dev": "pnpm -r --parallel run dev",
+    "dev:bot": "pnpm --filter @shiel/bot dev",
+    "dev:server": "pnpm --filter @shiel/server dev",
+    "dev:web": "pnpm --filter @shiel/web dev",
+    "build:web": "pnpm --filter @shiel/web build",
+    "start": "pnpm -r --parallel run start",
+    "start:bot": "pnpm --filter @shiel/bot start",
+    "start:server": "pnpm --filter @shiel/server start",
+    "mint-link": "node packages/shared/scripts/mint-link.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.15.0"
+}
