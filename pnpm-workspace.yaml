@@ -3,3 +3,12 @@ packages:
 allowBuilds:
   better-sqlite3: true
   esbuild: true
+minimumReleaseAgeExclude:
+  - uuid@11.1.1
+  - undici@6.27.0
+  - postcss@8.5.23
+  - undici@6.28.0
+overrides:
+  undici@<6.27.0: ">=6.27.0"
+  undici@<6.28.0: ">=6.28.0"
+  uuid@<11.1.1: ">=11.1.1"
