@@ -5,6 +5,8 @@ import got from "got";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CATALOG_PATH = path.join(__dirname, "data", "items.json");
+// Локальная копия сырого ответа API (в том же формате) — фолбек на случай 403/недоступности.
+const FALLBACK_PATH = path.join(__dirname, "market.json");
 const SOURCE_URL =
   "https://api.garmoth.com/api/market-alerts/market?region=ru&lang=ru";
 
@@ -73,18 +75,18 @@ function transform(items) {
   return final;
 }
 
-// Читает последний сохранённый каталог с диска (фолбек, когда источник недоступен).
-function readLocalCatalog() {
-  if (!fs.existsSync(CATALOG_PATH)) return null;
+// Читает локальную сырую копию каталога (market.json, формат ответа API).
+function readLocalSource() {
+  if (!fs.existsSync(FALLBACK_PATH)) return null;
   try {
-    return JSON.parse(fs.readFileSync(CATALOG_PATH, "utf8"));
+    return JSON.parse(fs.readFileSync(FALLBACK_PATH, "utf8"));
   } catch {
     return null;
   }
 }
 
 // Тянет свежий каталог из garmoth, пишет его в data/items.json и возвращает.
-// Если источник недоступен — откатывается на локальный data/items.json (если он есть).
+// Если источник недоступен — берёт локальный market.json и прогоняет через тот же transform().
 export async function refreshCatalog() {
   try {
     const json = await got
@@ -100,13 +102,14 @@ export async function refreshCatalog() {
     fs.writeFileSync(CATALOG_PATH, JSON.stringify(edited));
     return edited;
   } catch (e) {
-    const local = readLocalCatalog();
-    if (local) {
+    const local = readLocalSource();
+    if (local?.items) {
+      const edited = transform(local.items);
       console.warn(
         `[${new Date().toISOString()}] catalog: источник недоступен (${e.message}), ` +
-          `использую локальный data/items.json (${local.length} шт.)`,
+          `использую локальный market.json (${edited.length} шт.)`,
       );
-      return local;
+      return edited;
     }
     throw e;
   }
