@@ -98,8 +98,9 @@ async function getQueue(client) {
   try {
     if (!config.market.url || !config.market.cookie) return;
 
-    const body = await got
-      .post(config.market.url + "Home/GetWorldMarketWaitList", {
+    const res = await got.post(
+      config.market.url + "Home/GetWorldMarketWaitList",
+      {
         json: {},
         agent: { https: httpsAgent },
         headers: {
@@ -110,8 +111,20 @@ async function getQueue(client) {
           referer: config.market.url,
           "user-agent": DEFAULT_USER_AGENT,
         },
-      })
-      .json();
+      },
+    );
+
+    // Во время техработ трейд-сайт редиректит запрос на HTML-страницу
+    // обслуживания (/Maintenance/WebMaintanace) — она не парсится как JSON.
+    let body;
+    try {
+      body = JSON.parse(res.body);
+    } catch {
+      console.warn(
+        `[${new Date().toISOString()}] market worker: маркет недоступен (техобслуживание), пропускаю итерацию`,
+      );
+      return;
+    }
 
     const data = body?._waitList ?? [];
     const items = data.map((e) => ({
@@ -135,7 +148,7 @@ async function getQueue(client) {
         await user
           .send({
             content:
-              `${user}, лот «**${item.lvl}: ${item.name}**» зарегистрирован ` +
+              `${user}, лот «**${item.name}**» зарегистрирован ` +
               `на аукционе за ${formatPrice(item.price)}. ` +
               `Время размещения <t:${(item.time / 1000).toFixed(0)}:R>`,
           })
