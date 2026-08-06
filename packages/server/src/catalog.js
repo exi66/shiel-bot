@@ -73,18 +73,41 @@ function transform(items) {
   return final;
 }
 
+// Читает последний сохранённый каталог с диска (фолбек, когда источник недоступен).
+function readLocalCatalog() {
+  if (!fs.existsSync(CATALOG_PATH)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(CATALOG_PATH, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
 // Тянет свежий каталог из garmoth, пишет его в data/items.json и возвращает.
+// Если источник недоступен — откатывается на локальный data/items.json (если он есть).
 export async function refreshCatalog() {
-  const json = await got
-    .get(SOURCE_URL, {
-      headers: {
-        "user-agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      },
-    })
-    .json();
-  const edited = transform(json.items);
-  fs.mkdirSync(path.dirname(CATALOG_PATH), { recursive: true });
-  fs.writeFileSync(CATALOG_PATH, JSON.stringify(edited));
-  return edited;
+  try {
+    const json = await got
+      .get(SOURCE_URL, {
+        headers: {
+          "user-agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        },
+      })
+      .json();
+    const edited = transform(json.items);
+    fs.mkdirSync(path.dirname(CATALOG_PATH), { recursive: true });
+    fs.writeFileSync(CATALOG_PATH, JSON.stringify(edited));
+    return edited;
+  } catch (e) {
+    const local = readLocalCatalog();
+    if (local) {
+      console.warn(
+        `[${new Date().toISOString()}] catalog: источник недоступен (${e.message}), ` +
+          `использую локальный data/items.json (${local.length} шт.)`,
+      );
+      return local;
+    }
+    throw e;
+  }
 }
