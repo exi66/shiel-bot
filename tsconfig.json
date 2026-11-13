@@ -1,0 +1,26 @@
+{
+  // Проверка типов для JS-пакетов (bot, server, shared) без перехода на TS:
+  // pnpm typecheck. Фронт проверяется своим tsconfig в packages/web.
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "types": ["node"]
+  },
+  "include": [
+    "packages/bot/src",
+    "packages/server/src",
+    "packages/shared/src",
+    "packages/shared/scripts",
+    "packages/bot/test",
+    "packages/server/test",
+    "packages/shared/test"
+  ]
+}

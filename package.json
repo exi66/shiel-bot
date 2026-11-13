@@ -17,9 +17,27 @@
     "start": "pnpm -r --parallel run start",
     "start:bot": "pnpm --filter @shiel/bot start",
     "start:server": "pnpm --filter @shiel/server start",
-    "mint-link": "node packages/shared/scripts/mint-link.js"
+    "mint-link": "node packages/shared/scripts/mint-link.js",
+    "test": "node --test \"packages/*/test/**/*.test.{js,ts}\"",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc -p tsconfig.json && pnpm --filter @shiel/web exec tsc -b"
   },
   "engines": {
     "node": ">=20.19"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/express": "^4.17.25",
+    "@types/node": "^22.20.1",
+    "@types/node-cron": "^3.0.11",
+    "eslint": "^10.14.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.72.2"
   }
 }

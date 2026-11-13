@@ -1,0 +1,4 @@
+pnpm-lock.yaml
+packages/server/fixtures/
+packages/web/dist/
+data/
