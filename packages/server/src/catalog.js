@@ -2,11 +2,14 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import got from "got";
+import { BROWSER_USER_AGENT, REQUEST_TIMEOUT_MS } from "@shiel/shared/http";
+import { createLogger } from "@shiel/shared/logger";
+
+const log = createLogger("catalog");
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CATALOG_PATH = path.join(__dirname, "data", "items.json");
 // Локальная копия сырого ответа API (в том же формате) — фолбек на случай 403/недоступности.
-const FALLBACK_PATH = path.join(__dirname, "market.json");
+const FALLBACK_PATH = path.join(__dirname, "..", "fixtures", "market.json");
 const SOURCE_URL =
   "https://api.garmoth.com/api/market-alerts/market?region=ru&lang=ru";
 
@@ -16,7 +19,7 @@ const SPECIAL_15 = ["лабрескас", "мертвого бога", "перч
 const nameOf = (e) => e.name?.toLowerCase() ?? "";
 
 // Подходит ли сам предмет (грубый предфильтр по категории/имени).
-function itemMatches(e) {
+export function itemMatches(e) {
   const name = nameOf(e);
   const cat = e.main_category;
   return (
@@ -30,7 +33,7 @@ function itemMatches(e) {
 }
 
 // Подходит ли конкретный уровень заточки предмета.
-function levelMatches(e, lvl) {
+export function levelMatches(e, lvl) {
   const name = nameOf(e);
   const cat = e.main_category;
   return (
@@ -43,7 +46,7 @@ function levelMatches(e, lvl) {
 }
 
 // Разворачиваем отобранные предметы по уровням заточки в плоский список.
-function transform(items) {
+export function transform(items) {
   const final = [];
   for (const e of items) {
     if (!itemMatches(e)) continue;
@@ -61,23 +64,19 @@ function transform(items) {
     }
   }
 
-  final.sort((a, b) => {
-    if (a.market_main_category === b.market_main_category) {
-      if (a.market_sub_category === b.market_sub_category) {
-        if (a.id === b.id) return a.enhancement_level - b.enhancement_level;
-        return a.id - b.id;
-      }
-      return a.market_sub_category - b.market_sub_category;
-    }
-    return a.market_main_category - b.market_main_category;
-  });
+  final.sort(
+    (a, b) =>
+      a.market_main_category - b.market_main_category ||
+      a.market_sub_category - b.market_sub_category ||
+      a.id - b.id ||
+      a.enhancement_level - b.enhancement_level,
+  );
 
   return final;
 }
 
-// Читает локальную сырую копию каталога (market.json, формат ответа API).
+// Читает локальную сырую копию каталога (fixtures/market.json, формат ответа API).
 function readLocalSource() {
-  if (!fs.existsSync(FALLBACK_PATH)) return null;
   try {
     return JSON.parse(fs.readFileSync(FALLBACK_PATH, "utf8"));
   } catch {
@@ -85,29 +84,23 @@ function readLocalSource() {
   }
 }
 
-// Тянет свежий каталог из garmoth, пишет его в data/items.json и возвращает.
+// Тянет свежий каталог из garmoth и возвращает отфильтрованный список.
 // Если источник недоступен — берёт локальный market.json и прогоняет через тот же transform().
-export async function refreshCatalog() {
+export async function loadCatalog() {
   try {
     const json = await got
       .get(SOURCE_URL, {
-        headers: {
-          "user-agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        },
+        headers: { "user-agent": BROWSER_USER_AGENT },
+        timeout: { request: REQUEST_TIMEOUT_MS },
       })
       .json();
-    const edited = transform(json.items);
-    fs.mkdirSync(path.dirname(CATALOG_PATH), { recursive: true });
-    fs.writeFileSync(CATALOG_PATH, JSON.stringify(edited));
-    return edited;
+    return transform(json.items);
   } catch (e) {
     const local = readLocalSource();
     if (local?.items) {
       const edited = transform(local.items);
-      console.warn(
-        `[${new Date().toISOString()}] catalog: источник недоступен (${e.message}), ` +
-          `использую локальный market.json (${edited.length} шт.)`,
+      log.warn(
+        `источник недоступен (${e.message}), использую локальный market.json (${edited.length} шт.)`,
       );
       return edited;
     }
