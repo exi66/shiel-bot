@@ -1,6 +1,7 @@
 import { Command } from "@sapphire/framework";
 import { MessageFlags } from "discord.js";
-import { db } from "@shiel/shared";
+import * as db from "@shiel/shared/db";
+import { toUnixSeconds } from "../lib/market.js";
 
 export class SettingsCommand extends Command {
   constructor(context, options) {
@@ -24,7 +25,7 @@ export class SettingsCommand extends Command {
     await interaction.editReply({
       content:
         `Вы можете настроить свои уведомления по [этой ссылке](${result.url})\r\n` +
-        `Ссылка истечёт через <t:${Math.floor(result.expiredAt / 1000)}:R>`,
+        `Ссылка истечёт через <t:${toUnixSeconds(result.expiredAt)}:R>`,
     });
 
     // Удаляем эфемерный ответ по истечении срока ссылки.

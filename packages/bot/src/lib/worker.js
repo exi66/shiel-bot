@@ -3,34 +3,74 @@ import https from "node:https";
 import cron from "node-cron";
 import got from "got";
 import { ActivityType, EmbedBuilder } from "discord.js";
-import { config, db } from "@shiel/shared";
-import { EMBED_COLOR, DEFAULT_USER_AGENT } from "./constants.js";
+import { config } from "@shiel/shared/config";
+import * as db from "@shiel/shared/db";
+import { BROWSER_USER_AGENT, REQUEST_TIMEOUT_MS } from "@shiel/shared/http";
+import { createLogger } from "@shiel/shared/logger";
+import { EMBED_COLOR } from "./constants.js";
 import { formatPrice } from "./utils.js";
+import {
+  newCoupons,
+  newLots,
+  parseCoupons,
+  parseWaitList,
+  toUnixSeconds,
+} from "./market.js";
+import { sendDirect } from "./notify.js";
+
+const couponsLog = createLogger("coupons worker");
+const marketLog = createLogger("market worker");
 
 // Некоторые эндпоинты BDO используют legacy TLS-рукопожатие.
 const httpsAgent = new https.Agent({
   secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT,
 });
 
-// Состояние между итерациями (раньше жило в global.*)
+// Состояние между итерациями. null — первая итерация ещё не прошла:
+// в ней только запоминаем текущий снимок, без уведомлений (иначе после
+// каждого рестарта всем прилетали бы уже известные купоны/лоты).
 let coupons = null;
-let queue = { lastUpdate: null, items: [] };
+let queue = { lastUpdate: null, items: null };
+
+let task = null;
 
 export function startWorkers(client) {
-  cron.schedule("* * * * *", () => run(client));
+  task = cron.schedule("* * * * *", () => run(client));
+  run(client);
+}
+
+export function stopWorkers() {
+  task?.stop();
+  task = null;
 }
 
 // Текущее состояние очереди аукциона (для команды /queue).
 export function getQueueState() {
-  return queue;
+  return { lastUpdate: queue.lastUpdate, items: queue.items ?? [] };
 }
 
 // Текущий список купонов (для команды /coupons).
 export function getCouponsState() {
-  return coupons;
+  return coupons ?? [];
 }
 
-async function run(client) {
+// Не даёт запустить новую итерацию, пока предыдущая не завершилась
+// (иначе при медленном ответе две итерации видят один и тот же «старый»
+// снимок и шлют дубли).
+function exclusive(fn) {
+  let running = false;
+  return async (...args) => {
+    if (running) return;
+    running = true;
+    try {
+      await fn(...args);
+    } finally {
+      running = false;
+    }
+  };
+}
+
+function run(client) {
   const nextCheck = new Date(Date.now() + 60 * 1000).toLocaleTimeString(
     "ru-RU",
   );
@@ -40,76 +80,55 @@ async function run(client) {
     ],
   });
 
-  if (config.services.coupons) getCoupons(client);
-  if (config.services.queue) getQueue(client);
+  if (config.services.coupons) checkCoupons(client);
+  if (config.services.queue) checkQueue(client);
 }
 
-async function getCoupons(client) {
+const checkCoupons = exclusive(async () => {
   try {
-    if (!config.market.couponsUrl) return;
-
     const html = await got
       .get(config.market.couponsUrl, {
-        headers: {
-          "user-agent": config.links.git || DEFAULT_USER_AGENT,
-        },
+        headers: { "user-agent": config.links.git || BROWSER_USER_AGENT },
+        timeout: { request: REQUEST_TIMEOUT_MS },
       })
       .text();
 
-    // Коды лежат в <strong>КОД</strong>; купон — латиница+цифры (+возможен «!»), ровно 12 или 16 символов.
-    const found = [];
-    for (const m of html.matchAll(/<strong>([\s\S]*?)<\/strong>/gi)) {
-      const code = m[1]
-        .replace(/<[^>]+>/g, "")
-        .trim()
-        .toUpperCase();
-      if (/^(?:[A-Z0-9!]{12}|[A-Z0-9!]{16})$/.test(code)) found.push(code);
-    }
-    const codes = [...new Set(found)];
+    const codes = parseCoupons(html);
 
-    // Первая итерация после старта — только запоминаем базовый список, без уведомлений.
-    if (coupons === null) {
-      coupons = codes;
-      return;
-    }
+    if (coupons !== null) {
+      const fresh = newCoupons(coupons, codes);
+      if (fresh.length > 0) {
+        const embed = new EmbedBuilder()
+          .setColor(EMBED_COLOR)
+          .setTitle("Купоны")
+          .setURL(config.market.couponsUrl)
+          .setTimestamp(new Date())
+          .setDescription(fresh.map((c) => "```" + c + "```").join("\n"));
 
-    const fresh = codes.filter((c) => !coupons.includes(c));
-    if (fresh.length > 0) {
-      const embed = new EmbedBuilder()
-        .setColor(EMBED_COLOR)
-        .setTitle("Купоны")
-        .setURL(config.market.couponsUrl)
-        .setTimestamp(new Date())
-        .setDescription(fresh.map((c) => "```" + c + "```").join("\n"));
-
-      for (const userId of db.getCouponSubscribers()) {
-        const user = await client.users.fetch(userId).catch(() => null);
-        if (user) await user.send({ embeds: [embed] }).catch(() => null);
+        await sendDirect(db.getCouponSubscribers(), { embeds: [embed] });
       }
     }
 
     coupons = codes;
   } catch (e) {
-    console.error(`[${new Date().toISOString()}] coupons worker error: `, e);
+    couponsLog.error(e);
   }
-}
+});
 
-async function getQueue(client) {
+const checkQueue = exclusive(async () => {
   try {
-    if (!config.market.url || !config.market.cookie) return;
-
     const res = await got.post(
-      config.market.url + "Home/GetWorldMarketWaitList",
+      new URL("Home/GetWorldMarketWaitList", config.market.url),
       {
         json: {},
         agent: { https: httpsAgent },
+        timeout: { request: REQUEST_TIMEOUT_MS },
         headers: {
-          "content-type": "application/json",
           accept:
             "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
           cookie: config.market.cookie,
           referer: config.market.url,
-          "user-agent": DEFAULT_USER_AGENT,
+          "user-agent": BROWSER_USER_AGENT,
         },
       },
     );
@@ -120,44 +139,26 @@ async function getQueue(client) {
     try {
       body = JSON.parse(res.body);
     } catch {
-      console.warn(
-        `[${new Date().toISOString()}] market worker: маркет недоступен (техобслуживание), пропускаю итерацию`,
-      );
+      marketLog.warn("маркет недоступен (техобслуживание), пропускаю итерацию");
       return;
     }
 
-    const data = body?._waitList ?? [];
-    const items = data.map((e) => ({
-      id: e.mainKey,
-      lvl: e.chooseKey,
-      price: e._pricePerOne,
-      time: e._waitEndTime,
-      name: e.name,
-      unique: "" + e.mainKey + e.chooseKey + e._waitEndTime,
-    }));
+    const items = parseWaitList(body);
 
-    const oldUniques = new Set(queue.items.map((a) => a.unique));
-    const newItems = items.filter((e) => !oldUniques.has(e.unique));
-
-    for (const item of newItems) {
-      const userIds = db.getItemSubscribers(item.id, item.lvl);
-      for (const userId of userIds) {
-        const user = await client.users.fetch(userId).catch(() => null);
-        if (!user) continue;
-
-        await user
-          .send({
-            content:
-              `${user}, лот «**${item.name}**» зарегистрирован ` +
-              `на аукционе за ${formatPrice(item.price)}. ` +
-              `Время размещения <t:${(item.time / 1000).toFixed(0)}:R>`,
-          })
-          .catch(() => null);
+    if (queue.items !== null) {
+      for (const item of newLots(queue.items, items)) {
+        const userIds = db.getItemSubscribers(item.id, item.lvl);
+        await sendDirect(userIds, (user) => ({
+          content:
+            `${user}, лот «**${item.name}**» зарегистрирован ` +
+            `на аукционе за ${formatPrice(item.price)}. ` +
+            `Время размещения <t:${toUnixSeconds(item.time)}:R>`,
+        }));
       }
     }
 
     queue = { lastUpdate: new Date(), items };
   } catch (e) {
-    console.error(`[${new Date().toISOString()}] market worker error: `, e);
+    marketLog.error(e);
   }
-}
+});

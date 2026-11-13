@@ -1,29 +1,28 @@
-import { Command, container } from '@sapphire/framework';
-import { db } from '@shiel/shared';
+import { Command } from "@sapphire/framework";
+import * as db from "@shiel/shared/db";
+import { sendDirect } from "../lib/notify.js";
 
 export class SayCommand extends Command {
   constructor(context, options) {
     super(context, {
       ...options,
-      name: 'say',
-      aliases: ['s'],
-      description: 'Написать всем пользователям бота',
-      preconditions: ['ownerOnly'],
+      name: "say",
+      aliases: ["s"],
+      description: "Написать всем пользователям бота",
+      preconditions: ["ownerOnly"],
     });
   }
 
   // Только messageRun и никакого registerApplicationCommands —
   // команда не регистрируется как slash, доступна лишь по префиксу владельцу.
+  // В тексте каждое «@user» заменяется на упоминание получателя.
   async messageRun(message, args) {
-    const text = await args.rest('string');
-    const { client } = container;
+    const text = await args.rest("string");
 
-    for (const userId of db.getAllUserIds()) {
-      const user = await client.users.fetch(userId).catch(() => null);
-      if (!user) continue;
-      await user.send({ content: text.replace('@user', `<@${userId}>`) }).catch(() => null);
-    }
+    const sent = await sendDirect(db.getAllUserIds(), (user) => ({
+      content: text.replaceAll("@user", `${user}`),
+    }));
 
-    await message.react('✅').catch(() => null);
+    await message.reply(`Отправлено: ${sent}`).catch(() => null);
   }
 }

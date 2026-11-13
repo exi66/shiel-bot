@@ -1,7 +1,7 @@
 import { Command } from "@sapphire/framework";
 import { PaginatedMessage } from "@sapphire/discord.js-utilities";
 import { EmbedBuilder } from "discord.js";
-import { config } from "@shiel/shared";
+import { config } from "@shiel/shared/config";
 import { EMBED_COLOR } from "../lib/constants.js";
 import { getCouponsState } from "../lib/worker.js";
 
@@ -21,7 +21,7 @@ export class CouponsCommand extends Command {
 
   chatInputRun(interaction) {
     const coupons = getCouponsState();
-    if (!coupons || coupons.length < 1) {
+    if (coupons.length === 0) {
       return interaction.reply({ content: "Нет доступных купонов!" });
     }
 

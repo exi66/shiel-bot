@@ -1,9 +1,9 @@
-import { Precondition } from '@sapphire/framework';
-import { config } from '@shiel/shared/config';
+import { Precondition } from "@sapphire/framework";
+import { config } from "@shiel/shared/config";
 
 export class OwnerOnlyPrecondition extends Precondition {
   constructor(context, options) {
-    super(context, { ...options, name: 'ownerOnly' });
+    super(context, { ...options, name: "ownerOnly" });
   }
 
   chatInputRun(interaction) {
@@ -21,6 +21,6 @@ export class OwnerOnlyPrecondition extends Precondition {
   checkOwner(userId) {
     return config.discord.owners.includes(userId)
       ? this.ok()
-      : this.error({ message: 'Эта команда доступна только владельцу бота.' });
+      : this.error({ message: "Эта команда доступна только владельцу бота." });
   }
 }

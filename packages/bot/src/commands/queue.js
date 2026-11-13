@@ -3,6 +3,7 @@ import { PaginatedMessage } from "@sapphire/discord.js-utilities";
 import { EmbedBuilder } from "discord.js";
 import { EMBED_COLOR } from "../lib/constants.js";
 import { getQueueState } from "../lib/worker.js";
+import { toUnixSeconds } from "../lib/market.js";
 
 // Позиций на страницу. Держим с запасом под лимит поля эмбеда (1024 символа).
 const PAGE_SIZE = 10;
@@ -22,16 +23,15 @@ export class QueueCommand extends Command {
 
   chatInputRun(interaction) {
     const queue = getQueueState();
-    if (!queue.items || queue.items.length < 1) {
+    if (queue.items.length === 0) {
       return interaction.reply({ content: "Очередь аукциона пуста." });
     }
 
-    const timestamp = queue.lastUpdate ? new Date(queue.lastUpdate) : null;
     const paginated = new PaginatedMessage({
       template: new EmbedBuilder()
         .setColor(EMBED_COLOR)
         .setTitle("Очередь аукциона")
-        .setTimestamp(timestamp),
+        .setTimestamp(queue.lastUpdate),
     });
 
     for (let i = 0; i < queue.items.length; i += PAGE_SIZE) {
@@ -51,7 +51,7 @@ export class QueueCommand extends Command {
           {
             name: "Время размещения",
             value: chunk
-              .map((e) => `<t:${(e.time / 1000).toFixed(0)}:R>`)
+              .map((e) => `<t:${toUnixSeconds(e.time)}:R>`)
               .join("\n"),
             inline: true,
           },

@@ -5,6 +5,11 @@ import {
 } from "@sapphire/framework";
 import { GatewayIntentBits, Partials, ActivityType } from "discord.js";
 import { config, validateBotConfig } from "@shiel/shared/config";
+import { closeDb } from "@shiel/shared/db";
+import { createLogger } from "@shiel/shared/logger";
+import { stopWorkers } from "./lib/worker.js";
+
+const log = createLogger("bot");
 
 // Падаем сразу, если нет необходимых данных (токен, данные включённых воркеров).
 validateBotConfig();
@@ -33,5 +38,16 @@ const client = new SapphireClient({
     status: "online",
   },
 });
+
+async function shutdown(signal) {
+  log.info(`${signal} received, shutting down`);
+  stopWorkers();
+  await client.destroy().catch(() => null);
+  closeDb();
+  process.exit(0);
+}
+
+process.once("SIGINT", shutdown);
+process.once("SIGTERM", shutdown);
 
 client.login(config.discord.token);

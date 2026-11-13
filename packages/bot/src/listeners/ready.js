@@ -1,13 +1,16 @@
-import { Listener } from '@sapphire/framework';
-import { startWorkers } from '../lib/worker.js';
+import { Listener } from "@sapphire/framework";
+import { createLogger } from "@shiel/shared/logger";
+import { startWorkers } from "../lib/worker.js";
+
+const log = createLogger("bot");
 
 export class ReadyListener extends Listener {
   constructor(context) {
-    super(context, { once: true, event: 'ready' });
+    super(context, { once: true, event: "ready" });
   }
 
   run(client) {
-    console.log(`Bot logged in as ${client.user.tag}`);
+    log.info(`logged in as ${client.user.tag}`);
     startWorkers(client);
   }
 }
