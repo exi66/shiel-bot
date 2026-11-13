@@ -12,7 +12,7 @@ import { cn, declOfNum } from "@/lib/utils";
 const ICON_BASE = "https://cdn.bdolytics.com/img/";
 const ROW_HEIGHT = 40;
 
-// Сырой формат каталога (public/all.json старого проекта).
+// Элемент каталога из GET /api/items (см. server/src/catalog.js).
 export interface CatalogItem {
   id: number;
   enhancement_level: number;
@@ -42,7 +42,7 @@ function gradeText(grade: number): string {
   return "";
 }
 
-function keyOf(item: SelectedItem): string {
+export function keyOf(item: SelectedItem): string {
   return `${item.id}-${item.lvl}`;
 }
 
