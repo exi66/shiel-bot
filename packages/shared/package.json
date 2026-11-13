@@ -6,7 +6,11 @@
   "exports": {
     ".": "./src/index.js",
     "./config": "./src/config.js",
-    "./db": "./src/db/index.js"
+    "./db": "./src/db/index.js",
+    "./http": "./src/http.js",
+    "./items": "./src/items.js",
+    "./logger": "./src/logger.js",
+    "./meta": "./src/meta.js"
   },
   "dependencies": {
     "better-sqlite3": "^12.11.1",

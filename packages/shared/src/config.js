@@ -1,34 +1,8 @@
-import fs from "node:fs";
-import { config as loadEnv } from "dotenv";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// Корень монорепо: packages/shared/src -> ../../..
-const rootDir = path.resolve(__dirname, "..", "..", "..");
+import { config as loadEnv } from "dotenv";
+import { rootDir, readGitUrl } from "./meta.js";
 
 loadEnv({ path: path.join(rootDir, ".env") });
-
-// Ссылка на репозиторий берётся из корневого package.json (поле repository).
-function readGitUrl() {
-  try {
-    const pkg = JSON.parse(
-      fs.readFileSync(path.join(rootDir, "package.json"), "utf8"),
-    );
-    const repo = pkg.repository;
-    const url = typeof repo === "string" ? repo : repo?.url;
-    if (!url) return "";
-    return url.replace(/^git\+/, "").replace(/\.git$/, "");
-  } catch {
-    return "";
-  }
-}
-
-function required(name) {
-  const value = process.env[name];
-  if (!value) throw new Error(`Missing required env variable: ${name}`);
-  return value;
-}
 
 function bool(value, fallback = false) {
   if (value == null) return fallback;
@@ -49,7 +23,7 @@ export const config = {
   // БД (общая для бота и сервера)
   databasePath: path.resolve(
     rootDir,
-    process.env.DATABASE_PATH ?? "./data/app.db",
+    process.env.DATABASE_PATH ?? path.join(".", "data", "app.db"),
   ),
 
   // Discord bot
@@ -83,8 +57,6 @@ export const config = {
   links: {
     git: readGitUrl(),
   },
-
-  required,
 };
 
 function assert(cond, message) {
@@ -97,7 +69,10 @@ export function validateBotConfig() {
 
   // Воркеры поднимаются только если для них есть все данные.
   if (config.services.coupons) {
-    assert(config.market.couponsUrl, "SERVICE_COUPONS=true requires COUPONS_URL");
+    assert(
+      config.market.couponsUrl,
+      "SERVICE_COUPONS=true requires COUPONS_URL",
+    );
   }
   if (config.services.queue) {
     assert(config.market.url, "SERVICE_QUEUE=true requires MARKET_URL");
