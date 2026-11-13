@@ -1,0 +1,2 @@
+# Всегда LF в рабочей копии (Prettier проверяет endOfLine: lf), независимо от core.autocrlf.
+* text=auto eol=lf
